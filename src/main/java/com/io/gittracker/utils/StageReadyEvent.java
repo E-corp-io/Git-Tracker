@@ -1,4 +1,4 @@
-package com.io.gittracker;
+package com.io.gittracker.utils;
 
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationEvent;

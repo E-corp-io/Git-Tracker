@@ -5,7 +5,7 @@ on:
     branches:
       - master
 jobs:
-  frontend:
+  fronten:d:
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
