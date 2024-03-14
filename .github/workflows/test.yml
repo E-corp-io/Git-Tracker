@@ -8,5 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: build
-        run: pwd && gradle run
+        run: pwd && ./gradlew run
 
