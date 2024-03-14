@@ -8,6 +8,7 @@ plugins {
 
 group = 'com.io'
 version = '0.0.1-SNAPSHOT'
+mainClassName = "com.io.gittracker.GitTrackerApplication"
 
 java {
     sourceCompatibility = '17'

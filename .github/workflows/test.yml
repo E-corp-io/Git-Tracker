@@ -2,12 +2,11 @@ name: Tests
 
 on:
   push:
-    branches:
-      - master
+
 jobs:
-  fronten:d:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Install dependencies
-        run: echo "All good"
+      - name: build
+        run: gradle run
 
