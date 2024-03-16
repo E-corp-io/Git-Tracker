@@ -11,17 +11,22 @@ import org.springframework.context.support.GenericApplicationContext;
 
 public class UIApplication extends Application {
     private ConfigurableApplicationContext context;
+
     @Override
     public void init() {
         ApplicationContextInitializer<GenericApplicationContext> initializer = applicationContext -> {
             applicationContext.registerBean(Application.class, () -> UIApplication.this);
         };
-        this.context = new SpringApplicationBuilder(GitTrackerApplication.class).initializers(initializer).run();
+        this.context = new SpringApplicationBuilder(GitTrackerApplication.class)
+                .initializers(initializer)
+                .run();
     }
+
     @Override
     public void start(Stage primaryStage) {
         this.context.publishEvent(new StageReadyEvent(primaryStage));
     }
+
     @Override
     public void stop() {
         context.close();
