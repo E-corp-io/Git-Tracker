@@ -1,0 +1,52 @@
+Tworzenie nowej tablicy:
+
+Krok 1: Wprowadź klucz api.
+Krok 2: Przejdź do sekcji tworzenia nowej tablicy.
+Krok 3: Wprowadź nazwę tablicy i nazwę grupy projektowej.
+Krok 4: Dodaj co najmniej jeden link do repozytorium GitHub.
+Krok 5: Potwierdź tworzenie tablicy i sprawdź, czy została poprawnie utworzona.
+
+
+Dodawanie linków do istniejącej tablicy:
+
+Krok 1: Wprowadź klucz api.
+Krok 2: Wybierz istniejącą tablicę.
+Krok 3: Dodaj nowy link do repozytorium GitHub.
+Krok 4: Upewnij się, że link został poprawnie dodany i wyświetla się na tablicy.
+
+
+Sprawdzanie daty i komunikatu ostatniego commitu:
+
+Krok 1: Wprowadź klucz api.
+Krok 2: Dodaj nowy link do testowego repozytorium GitHub które masz ściągnięte lokalnie.
+Krok 3: Stwórz nowy plik w projekcie, dodaj go do gita, stwórz nowy commit i pchnij do zdalnego repozytorium na githubie.
+Krok 4: Sprawdź, czy obok linku do repozytorium GitHub wyświetla się poprawna data ostatniego commitu.
+Krok 5: Upewnij się, że wyświetlany jest właściwy komunikat ostatniego commitu.
+
+
+Klonowanie wszytkich repozytoriów z tablicy:
+
+Krok 1: Wprowadź klucz api.
+Krok 2: Przejdź do sekcji tworzenia nowej tablicy.
+Krok 3: Wprowadź nazwę tablicy i nazwę grupy projektowej.
+Krok 4: Dodaj co najmniej dwa linki do repozytoriów GitHub.
+Krok 5: Sklonuj wszystkie repozytoria do lokalnego folderu.
+Krok 6: Sprawdź czy klonowanie przebiegło pomyślnie.
+
+
+Klonowanie wszytkich repozytoriów z tablicy - błędy:
+
+Krok 1: Wprowadź klucz api.
+Krok 2: Przejdź do sekcji tworzenia nowej tablicy.
+Krok 3: Wprowadź nazwę tablicy i nazwę grupy projektowej.
+Krok 4: Dodaj poprawny link do repozytoriów GitHub.
+Krok 5: Dodaj niepoprawny link do repozytoriów GitHub.
+Krok 5: Sklonuj wszystkie repozytoria do lokalnego folderu.
+Krok 6: Sprawdź czy klonowanie poprawnego repozytorium przebiegło pomyślnie.
+Krok 6: Sprawdź czy otrzymałeś komunikat o niesklonowaniu z błędnego linku.
+
+
+
+
+
+
