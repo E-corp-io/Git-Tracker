@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Run spotlessApply using ./gradlew before pushing
+
+COMMAND="./gradlew --quiet spotlessCheck"
+
+echo "Running spotlessCheck..."
+eval "$COMMAND"
+RESULT=$?
+
+if [ $RESULT -ne 0 ]; then
+  echo "spotlessCheck failed. Please fix the formatting issues before pushing. (./gradlew spotlessApply)"
+  exit 1
+fi
+
+echo "spotlessCheck passed."
+exit 0

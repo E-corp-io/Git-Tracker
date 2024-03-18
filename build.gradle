@@ -36,6 +36,12 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+tasks.register('addPrePushGitHook', Copy) {
+    from ".scripts/pre-push"
+    into ".git/hooks"
+    fileMode 0777
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
