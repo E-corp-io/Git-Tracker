@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane styleClass="root" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.io.gittracker.controllers.MainViewPresenter">
+   <left>
+      <VBox styleClass="vbox" BorderPane.alignment="CENTER">
+          <Label text="Classes:"/>
+          <ListView fx:id="classes"/>
+
+          <Label text="Groups"/>
+          <ListView fx:id="groups"/>
+
+          <Label text="Other"/>
+          <ListView fx:id="other"/>
+      </VBox>
+   </left>
+   <top>
+      <VBox styleClass="vbox" BorderPane.alignment="CENTER">
+          <Label text="Settings"/>
+          <Label text="Sorting options"/>
+      </VBox>
+   </top>
+   <center>
+       <VBox styleClass="vbox" BorderPane.alignment="CENTER">
+
+       </VBox>
+   </center>
+</BorderPane>

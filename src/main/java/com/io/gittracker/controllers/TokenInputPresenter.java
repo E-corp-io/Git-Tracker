@@ -7,11 +7,11 @@ import javafx.scene.control.TextField;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TokenInput {
+public class TokenInputPresenter {
     private final TokenService tokenService;
     private final UIMain uiMain;
 
-    public TokenInput(TokenService tokenService, UIMain uiMain) {
+    public TokenInputPresenter(TokenService tokenService, UIMain uiMain) {
         this.tokenService = tokenService;
         this.uiMain = uiMain;
     }

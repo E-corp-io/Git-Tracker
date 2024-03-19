@@ -1,0 +1,19 @@
+.root {
+    -fx-background-color: #686c74;
+    -fx-padding: 10px;
+}
+
+.list-cell{
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #686c74;
+}
+.list-view{
+    -fx-pref-height: 500px;
+    -fx-min-width: 20%;
+}
+
+.vbox{
+    -fx-text-fill: #ffffff;
+    -fx-padding: 20px;
+    -fx-background-color: #383c44;
+}

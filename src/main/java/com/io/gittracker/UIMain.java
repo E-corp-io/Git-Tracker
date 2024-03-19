@@ -37,7 +37,7 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
         this.load("/fxml/tokenInput.fxml","/styles/tokenInput.css");
     }
     public void loadSubjectView() {
-        this.load("/fxml/subjectView.fxml","/styles/subjectView.css");
+        this.load("/fxml/mainView.fxml", "/styles/mainView.css");
     }
     private void load(String fxml, String css) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxml));
