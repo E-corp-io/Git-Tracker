@@ -3,7 +3,6 @@ package com.io.gittracker;
 import com.io.gittracker.utils.StageReadyEvent;
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Optional;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -30,18 +29,19 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
         stage.setHeight(600);
         stage.setWidth(800);
         Scene scene = new Scene(rootPane);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm())  ;
         this.loadTokenInput();
         stage.setScene(scene);
         stage.show();
     }
 
     private void loadTokenInput() {
-        this.load("/fxml/tokenInput.fxml","/styles/tokenInput.css");
+        this.load("/fxml/tokenInput.fxml");
     }
     public void loadSubjectView() {
-        this.load("/fxml/mainView.fxml", "/styles/mainView.css");
+        this.load("/fxml/mainView.fxml");
     }
-    private void load(String fxml, String css) {
+    private void load(String fxml) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxml));
         fxmlLoader.setControllerFactory(applicationContext::getBean);
         Pane view = null;
@@ -50,9 +50,6 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
         }catch (IOException e){
             System.out.printf("fxml loader failed loading '%s'\n",fxml);
         }
-        Optional.ofNullable(view).ifPresent(
-                v -> v.getStylesheets().add(Objects.requireNonNull(getClass().getResource(css)).toExternalForm()))
-        ;
         rootPane.setCenter(view);
     }
 }
