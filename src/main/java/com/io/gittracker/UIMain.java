@@ -27,6 +27,8 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
     public void onApplicationEvent(StageReadyEvent event) {
         Stage stage = event.getStage();
         stage.setTitle("Git Tracker");
+        stage.setHeight(600);
+        stage.setWidth(800);
         Scene scene = new Scene(rootPane);
         this.loadTokenInput();
         stage.setScene(scene);
