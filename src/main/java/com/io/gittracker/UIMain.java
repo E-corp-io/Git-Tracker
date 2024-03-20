@@ -3,7 +3,6 @@ package com.io.gittracker;
 import com.io.gittracker.utils.StageReadyEvent;
 import java.io.IOException;
 import java.util.Objects;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -20,6 +19,7 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
     public UIMain(ConfigurableApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
+
     private final BorderPane rootPane = new BorderPane();
 
     @Override
@@ -29,7 +29,9 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
         stage.setHeight(600);
         stage.setWidth(800);
         Scene scene = new Scene(rootPane);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm())  ;
+        scene.getStylesheets()
+                .add(Objects.requireNonNull(getClass().getResource("/styles/styles.css"))
+                        .toExternalForm());
         this.loadTokenInput();
         stage.setScene(scene);
         stage.show();
@@ -38,17 +40,19 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
     private void loadTokenInput() {
         this.load("/fxml/tokenInput.fxml");
     }
+
     public void loadSubjectView() {
         this.load("/fxml/mainView.fxml");
     }
+
     private void load(String fxml) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxml));
         fxmlLoader.setControllerFactory(applicationContext::getBean);
         Pane view = null;
         try {
             view = fxmlLoader.load();
-        }catch (IOException e){
-            System.out.printf("fxml loader failed loading '%s'\n",fxml);
+        } catch (IOException e) {
+            System.out.printf("fxml loader failed loading '%s'\n", fxml);
         }
         rootPane.setCenter(view);
     }
