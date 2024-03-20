@@ -17,3 +17,23 @@
     -fx-padding: 20px;
     -fx-background-color: #383c44;
 }
+.label{
+    -fx-text-fill: #ffffff;
+}
+
+.vboxCenter {
+    -fx-pref-width: 500px;
+    -fx-pref-height: 500px;
+    -fx-background-color: #383c44;
+}
+
+.margin{
+    -fx-padding: 10px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+}
+.marginTop{
+    -fx-padding: 5px 0 0 0;
+    -fx-border-insets: 5px 0 0 0;
+    -fx-background-insets: 5px 0 0 0;
+}
