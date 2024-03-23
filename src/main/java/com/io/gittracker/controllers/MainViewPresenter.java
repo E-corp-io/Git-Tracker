@@ -4,13 +4,11 @@ import com.io.gittracker.UIMain;
 import com.io.gittracker.model.AppState;
 import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.TokenService;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -72,7 +70,8 @@ public class MainViewPresenter {
         popupStage.initOwner(thisStage);
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/addRepo.fxml")));
         Scene popupScene = new Scene(root);
-        popupScene.getStylesheets()
+        popupScene
+                .getStylesheets()
                 .add(Objects.requireNonNull(getClass().getResource("/styles/styles.css"))
                         .toExternalForm());
         popupStage.setScene(popupScene);

@@ -12,15 +12,18 @@ public class RepoInputPresenter {
 
     @FXML
     private TextField inputWorkspace;
+
     @FXML
     private TextField inputGroup;
+
     @FXML
     private Button confirmButton;
+
     @FXML
     private Button cancelButton;
+
     @FXML
     private TextField inputRepo;
-
 
     @FXML
     private void handleConfirm(MouseEvent mouseEvent) {
