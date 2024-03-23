@@ -4,14 +4,25 @@ import com.io.gittracker.UIMain;
 import com.io.gittracker.model.AppState;
 import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.TokenService;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -53,7 +64,19 @@ public class MainViewPresenter {
     }
 
     @FXML
-    public void handleAddNewRepoClicked() {
-        System.out.println("clicked!");
+    public void handleAddNewRepoClicked(MouseEvent event) throws IOException {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        Node node = (Node) event.getSource();
+        Stage thisStage = (Stage) node.getScene().getWindow();
+        popupStage.initOwner(thisStage);
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/addRepo.fxml")));
+        Scene popupScene = new Scene(root);
+        popupScene.getStylesheets()
+                .add(Objects.requireNonNull(getClass().getResource("/styles/styles.css"))
+                        .toExternalForm());
+        popupStage.setScene(popupScene);
+        popupStage.setTitle("Add new repo");
+        popupStage.show();
     }
 }
