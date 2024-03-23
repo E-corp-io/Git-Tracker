@@ -23,7 +23,10 @@
             <Label text="Group:"/>
             <TextField fx:id="inputGroup"/>
         </HBox>
-
+        <HBox>
+            <Label text="Due date:"/>
+            <DatePicker fx:id="dateInput"/>
+        </HBox>
         <HBox>
             <Button text="Confirm" fx:id="confirmButton" onMouseClicked="#handleConfirm"/>
             <Button text="Cancel" fx:id="cancelButton" onMouseClicked="#handleCancel"/>
