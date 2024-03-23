@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Objects;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -18,27 +20,40 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
         this.applicationContext = applicationContext;
     }
 
+    private final BorderPane rootPane = new BorderPane();
+
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
         Stage stage = event.getStage();
         stage.setTitle("Git Tracker");
-        Scene scene;
-        try {
-            scene = this.loadTokenInput();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        stage.setHeight(600);
+        stage.setWidth(800);
+        Scene scene = new Scene(rootPane);
+        scene.getStylesheets()
+                .add(Objects.requireNonNull(getClass().getResource("/styles/styles.css"))
+                        .toExternalForm());
+        this.loadTokenInput();
         stage.setScene(scene);
         stage.show();
     }
 
-    private Scene loadTokenInput() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/tokenInput.fxml"));
+    private void loadTokenInput() {
+        this.load("/fxml/tokenInput.fxml");
+    }
+
+    public void loadSubjectView() {
+        this.load("/fxml/mainView.fxml");
+    }
+
+    private void load(String fxml) {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxml));
         fxmlLoader.setControllerFactory(applicationContext::getBean);
-        Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets()
-                .add(Objects.requireNonNull(getClass().getResource("/styles/tokenInput.css"))
-                        .toExternalForm());
-        return scene;
+        Pane view = null;
+        try {
+            view = fxmlLoader.load();
+        } catch (IOException e) {
+            System.out.printf("fxml loader failed loading '%s'\n", fxml);
+        }
+        rootPane.setCenter(view);
     }
 }
