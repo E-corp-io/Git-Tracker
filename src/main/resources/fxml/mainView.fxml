@@ -3,28 +3,37 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane styleClass="root" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.io.gittracker.controllers.MainViewPresenter">
-   <left>
-      <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
-          <Label text="Classes:" />
-          <ListView fx:id="classes" />
+<BorderPane styleClass="root"
+            xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../styles/styles.css"
+            fx:controller="com.io.gittracker.controllers.MainViewPresenter">
+    <left>
+        <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
+            <Label text="Classes:"/>
+            <ListView fx:id="classes"/>
 
-          <Label styleClass="marginTop" text="Groups" />
-          <ListView fx:id="groups" />
+            <Label styleClass="marginTop" text="Groups"/>
+            <ListView fx:id="groups"/>
 
-          <Label styleClass="marginTop" text="Other" />
-          <ListView fx:id="other" />
-      </VBox>
-   </left>
-   <top>
-      <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
-          <Label text="Settings" />
-          <Label text="Sorting options" />
-      </VBox>
-   </top>
-   <center>
-       <VBox styleClass="vboxCenter, margin" BorderPane.alignment="CENTER">
-            <Label text="xxxxxxxxxxxxxxx" />
-       </VBox>
-   </center>
+            <Label styleClass="marginTop" text="Other"/>
+            <ListView fx:id="other"/>
+        </VBox>
+    </left>
+    <top>
+        <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
+            <HBox>
+                <Label text="Settings"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="newRepoLabel" text="Add new repo" onMouseClicked="#handleAddNewRepoClicked"/>
+            </HBox>
+
+            <Label text="Sorting options"/>
+        </VBox>
+    </top>
+    <center>
+        <VBox styleClass="vboxCenter, margin" BorderPane.alignment="CENTER">
+            <Label text="xxxxxxxxxxxxxxx"/>
+        </VBox>
+    </center>
 </BorderPane>
