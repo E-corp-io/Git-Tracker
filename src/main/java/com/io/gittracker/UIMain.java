@@ -29,9 +29,6 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
         stage.setHeight(600);
         stage.setWidth(800);
         Scene scene = new Scene(rootPane);
-        scene.getStylesheets()
-                .add(Objects.requireNonNull(getClass().getResource("/styles/styles.css"))
-                        .toExternalForm());
         this.loadTokenInput();
         stage.setScene(scene);
         stage.show();
