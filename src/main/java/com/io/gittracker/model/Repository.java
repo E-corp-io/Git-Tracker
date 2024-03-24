@@ -1,7 +1,7 @@
 package com.io.gittracker.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,20 +11,20 @@ public final class Repository implements Serializable {
     private float grade;
 
     private String comment;
-    private Date dueDate;
+    private LocalDate dueDate;
     private final List<String> labels;
-    private int group;
-    private int subgroup;
+    private String group;
+    private String subgroup;
 
     public Repository(
             String githubName,
             String url,
             float grade,
             String comment,
-            Date dueDate,
+            LocalDate dueDate,
             List<String> labels,
-            int group,
-            int subgroup) {
+            String group,
+            String subgroup) {
         this.githubName = githubName;
         this.url = url;
         this.grade = grade;
@@ -51,7 +51,7 @@ public final class Repository implements Serializable {
         return comment;
     }
 
-    public Date getDueDate() {
+    public LocalDate getDueDate() {
         return dueDate;
     }
 
@@ -59,11 +59,11 @@ public final class Repository implements Serializable {
         return labels;
     }
 
-    public int getGroup() {
+    public String getGroup() {
         return group;
     }
 
-    public int getSubgroup() {
+    public String getSubgroup() {
         return subgroup;
     }
 
@@ -83,15 +83,15 @@ public final class Repository implements Serializable {
         this.comment = comment;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 
-    public void setGroup(int group) {
+    public void setGroup(String group) {
         this.group = group;
     }
 
-    public void setSubgroup(int subgroup) {
+    public void setSubgroup(String subgroup) {
         this.subgroup = subgroup;
     }
 
@@ -106,8 +106,8 @@ public final class Repository implements Serializable {
                 && Objects.equals(this.comment, that.comment)
                 && Objects.equals(this.dueDate, that.dueDate)
                 && Objects.equals(this.labels, that.labels)
-                && this.group == that.group
-                && this.subgroup == that.subgroup;
+                && Objects.equals(this.group, that.group)
+                && Objects.equals(this.subgroup, that.subgroup);
     }
 
     @Override
