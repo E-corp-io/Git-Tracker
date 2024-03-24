@@ -20,6 +20,9 @@ public class UIApplication extends Application {
         this.context = new SpringApplicationBuilder(GitTrackerApplication.class)
                 .initializers(initializer)
                 .run();
+
+        ManualTest manualTest = context.getBean(ManualTest.class);
+        manualTest.ManualTest();
     }
 
     @Override
