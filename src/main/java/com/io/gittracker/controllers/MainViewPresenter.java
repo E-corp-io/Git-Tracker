@@ -5,13 +5,10 @@ import com.io.gittracker.model.AppState;
 import com.io.gittracker.model.Repository;
 import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.TokenService;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +19,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -36,6 +32,7 @@ public class MainViewPresenter {
     private void getHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
     }
+
     private AppState appState = new AppState(
             new ArrayList<>(List.of(
                     new Workspace("Inżynieria Oprogramowania", null), new Workspace("Technologie obiektowe", null))),
@@ -72,16 +69,32 @@ public class MainViewPresenter {
     @FXML
     private TilePane repoBox;
 
-    private ArrayList<Repository> repoList = new ArrayList<>(); // change to observable list once it actually changes + connect to the model
+    private ArrayList<Repository> repoList =
+            new ArrayList<>(); // change to observable list once it actually changes + connect to the model
 
     public void initTestRepoList() { // just for testing purposes
-        Repository repo1 = new Repository("Git-tracker", "https://github.com/E-corp-io/Git-Tracker",
-                4.0f, "", LocalDate.of(2024,4,25), new ArrayList<String>(List.of("graded")), "Inżynieria oprogramowania", "Grupa 6");
+        Repository repo1 = new Repository(
+                "Git-tracker",
+                "https://github.com/E-corp-io/Git-Tracker",
+                4.0f,
+                "",
+                LocalDate.of(2024, 4, 25),
+                new ArrayList<String>(List.of("graded")),
+                "Inżynieria oprogramowania",
+                "Grupa 6");
         repoList.add(repo1);
-        Repository repo2 = new Repository("Git-tracker2", "https://github.com/E-corp-io/Git-Tracker",
-                3.0f, "", LocalDate.of(2024,4,25), new ArrayList<String>(List.of("graded")), "Inżynieria oprogramowania", "Grupa 6");
+        Repository repo2 = new Repository(
+                "Git-tracker2",
+                "https://github.com/E-corp-io/Git-Tracker",
+                3.0f,
+                "",
+                LocalDate.of(2024, 4, 25),
+                new ArrayList<String>(List.of("graded")),
+                "Inżynieria oprogramowania",
+                "Grupa 6");
         repoList.add(repo2);
     }
+
     public void createTilesFromList() {
         clearTileList();
         repoList.forEach(repo -> {

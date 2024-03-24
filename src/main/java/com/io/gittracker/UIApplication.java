@@ -9,7 +9,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -23,11 +22,12 @@ public class UIApplication extends Application {
         ApplicationContextInitializer<GenericApplicationContext> initializer = applicationContext -> {
             applicationContext.registerBean(Application.class, () -> UIApplication.this);
         };
-        //this.hostServices = getHostServices();
+        // this.hostServices = getHostServices();
         this.context = new SpringApplicationBuilder(GitTrackerApplication.class)
                 .initializers(initializer)
                 .run();
     }
+
     @Bean
     public HostServices getGetHostServices() {
         return this.hostServices;
