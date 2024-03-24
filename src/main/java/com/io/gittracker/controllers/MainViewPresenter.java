@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,12 +21,21 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MainViewPresenter {
     private final TokenService tokenService;
     private final UIMain uiMain;
+
+    private HostServices hostServices;
+
+    @Autowired
+    private void getHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
+    }
     private AppState appState = new AppState(
             new ArrayList<>(List.of(
                     new Workspace("Inżynieria Oprogramowania", null), new Workspace("Technologie obiektowe", null))),
@@ -67,6 +78,9 @@ public class MainViewPresenter {
         Repository repo1 = new Repository("Git-tracker", "https://github.com/E-corp-io/Git-Tracker",
                 4.0f, "", LocalDate.of(2024,4,25), new ArrayList<String>(List.of("graded")), "Inżynieria oprogramowania", "Grupa 6");
         repoList.add(repo1);
+        Repository repo2 = new Repository("Git-tracker2", "https://github.com/E-corp-io/Git-Tracker",
+                3.0f, "", LocalDate.of(2024,4,25), new ArrayList<String>(List.of("graded")), "Inżynieria oprogramowania", "Grupa 6");
+        repoList.add(repo2);
     }
     public void createTilesFromList() {
         clearTileList();
@@ -81,9 +95,14 @@ public class MainViewPresenter {
 
     private VBox createTile(Repository repo) {
         VBox tile = new VBox();
+        tile.getStyleClass().add("repoTile");
         HBox upperRow = new HBox();
         HBox lowerRow = new HBox();
         Label repoName = new Label(repo.getGithubName());
+        repoName.setOnMouseClicked(event -> {
+            System.out.println(repo.getUrl());
+            this.hostServices.showDocument(repo.getUrl());
+        });
         Label lastCommit = new Label("last commit msg should go here");
         upperRow.getChildren().add(repoName);
         lowerRow.getChildren().add(lastCommit);

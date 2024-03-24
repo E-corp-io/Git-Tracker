@@ -23,7 +23,7 @@
       </VBox>
    </top>
    <center>
-       <TilePane fx:id="repoBox" styleClass="vboxCenter, margin" BorderPane.alignment="CENTER">
+       <TilePane fx:id="repoBox" styleClass="vboxCenter, margin" BorderPane.alignment="CENTER" prefColumns="1" vgap="2">
        </TilePane>
    </center>
 </BorderPane>

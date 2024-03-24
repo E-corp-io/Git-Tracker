@@ -76,3 +76,7 @@ Button:hover {
 Button:pressed {
     -fx-background-color: #004080;
 }
+
+.repoTile {
+    -fx-background-color: #686c74;
+}
