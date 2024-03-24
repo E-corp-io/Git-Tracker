@@ -2,6 +2,7 @@ package com.io.gittracker.model;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -13,20 +14,20 @@ public final class AppState implements Serializable {
     private final List<Workspace> workspaces;
     private int currentWorkspaceIndex;
     private int currentGroupIndex;
-    private int currentSubgroupIndex;
 
     private final Date lastUpdate;
 
-    public AppState(
-            List<Workspace> workspaces,
-            int currentWorkspaceIndex,
-            int currentGroupIndex,
-            int currentSubgroupIndex,
-            Date lastUpdate) {
+    /**
+     * creates a default empty appState
+     */
+    public AppState() {
+        this(new ArrayList<>(), 0, 0, new Date());
+    }
+
+    public AppState(List<Workspace> workspaces, int currentWorkspaceIndex, int currentGroupIndex, Date lastUpdate) {
         this.workspaces = workspaces;
         this.currentWorkspaceIndex = currentWorkspaceIndex;
         this.currentGroupIndex = currentGroupIndex;
-        this.currentSubgroupIndex = currentSubgroupIndex;
         this.lastUpdate = lastUpdate;
     }
 
@@ -38,13 +39,12 @@ public final class AppState implements Serializable {
         return Objects.equals(this.workspaces, that.workspaces)
                 && this.currentWorkspaceIndex == that.currentWorkspaceIndex
                 && this.currentGroupIndex == that.currentGroupIndex
-                && this.currentSubgroupIndex == that.currentSubgroupIndex
                 && Objects.equals(this.lastUpdate, that.lastUpdate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(workspaces, currentWorkspaceIndex, currentGroupIndex, currentSubgroupIndex, lastUpdate);
+        return Objects.hash(workspaces, currentWorkspaceIndex, currentGroupIndex, lastUpdate);
     }
 
     @Override
@@ -53,12 +53,15 @@ public final class AppState implements Serializable {
                 + workspaces + ", " + "currentWorkspaceIndex="
                 + currentWorkspaceIndex + ", " + "currentGroupIndex="
                 + currentGroupIndex + ", " + "currentSubgroupIndex="
-                + currentSubgroupIndex + ", " + "lastUpdate="
                 + lastUpdate + ']';
     }
 
     public List<Workspace> getWorkspaces() {
         return workspaces;
+    }
+
+    public void addWorkspace(Workspace workspace) {
+        workspaces.add(workspace);
     }
 
     public int getCurrentWorkspaceIndex() {
@@ -67,10 +70,6 @@ public final class AppState implements Serializable {
 
     public int getCurrentGroupIndex() {
         return currentGroupIndex;
-    }
-
-    public int getCurrentSubgroupIndex() {
-        return currentSubgroupIndex;
     }
 
     public Date getLastUpdate() {
@@ -83,10 +82,6 @@ public final class AppState implements Serializable {
 
     public void setCurrentGroupIndex(int index) {
         currentGroupIndex = index;
-    }
-
-    public void setCurrentSubgroupIndex(int index) {
-        currentSubgroupIndex = index;
     }
 
     public void setLastUpdate(Date date) {

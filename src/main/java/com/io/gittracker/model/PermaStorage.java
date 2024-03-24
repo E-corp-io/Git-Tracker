@@ -2,11 +2,13 @@ package com.io.gittracker.model;
 
 import dev.dirs.ProjectDirectories;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PermaStorage {
-    private static String path;
+    private final String path;
+
+    Logger logger = LoggerFactory.getLogger(PermaStorage.class);
 
     public PermaStorage() {
         ProjectDirectories myProjDirs = ProjectDirectories.from("com", "Ecorp", "GitTracker");
@@ -14,49 +16,30 @@ public class PermaStorage {
         if (!directory.exists()) {
             directory.mkdirs();
         }
-
         path = myProjDirs.configDir + "/appState.ser";
-
-        return;
     }
 
     public void saveState(AppState appState) {
+        logger.debug("Saving app state");
         File f = new File(path);
-        FileOutputStream fos;
-        try {
-            fos = new FileOutputStream(f);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f))) {
             oos.writeObject(appState);
-            oos.close();
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(ex);
         } catch (IOException ex) {
+            logger.error("failed to save app state {}", appState, ex);
             throw new RuntimeException(ex);
         }
     }
 
     public AppState readState() {
+        logger.debug("Reading app state");
         AppState appState;
         File f = new File(path);
-        FileInputStream fis;
-        try {
-            fis = new FileInputStream(f);
-            ObjectInputStream ois = new ObjectInputStream(fis);
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
             appState = (AppState) ois.readObject();
-            ois.close();
         } catch (Exception e) {
-            appState = new AppState(new ArrayList<Workspace>(), -1, -1, -1, new Date());
-            FileOutputStream fos;
-            try {
-                fos = new FileOutputStream(f);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(appState);
-                oos.close();
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            logger.error("failed to read app state, creating new state...");
+            appState = new AppState();
+            saveState(appState);
         }
         return appState;
     }
