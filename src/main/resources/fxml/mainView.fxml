@@ -32,8 +32,7 @@
         </VBox>
     </top>
     <center>
-        <VBox styleClass="vboxCenter, margin" BorderPane.alignment="CENTER">
-            <Label text="xxxxxxxxxxxxxxx"/>
-        </VBox>
+       <TilePane fx:id="repoBox" styleClass="vboxCenter, margin" BorderPane.alignment="CENTER">
+       </TilePane>
     </center>
 </BorderPane>
