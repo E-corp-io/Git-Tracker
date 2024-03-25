@@ -18,7 +18,12 @@
    </left>
    <top>
       <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
-          <Label text="Settings" />
+          <HBox>
+              <Label text="Settings" />
+              <Region HBox.hgrow="ALWAYS" />
+              <Label fx:id="newRepoLabel" text="Add new repo" onMouseClicked="#handleAddNewRepoClicked"/>
+          </HBox>
+
           <Label text="Sorting options" />
       </VBox>
    </top>

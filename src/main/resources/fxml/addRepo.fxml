@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.io.gittracker.controllers.RepoInputPresenter"
+            prefHeight="200.0" prefWidth="400.0">
+    <VBox>
+        <HBox>
+            <Label text="Enter repository address:"/>
+            <TextField fx:id="inputRepo"/>
+        </HBox>
+        <HBox>
+            <Label text="Workspace:"/>
+            <TextField fx:id="inputWorkspace"/>
+        </HBox>
+        <HBox>
+            <Label text="Group:"/>
+            <TextField fx:id="inputGroup"/>
+        </HBox>
+        <HBox>
+            <Label text="Due date:"/>
+            <DatePicker fx:id="dateInput"/>
+        </HBox>
+        <HBox>
+            <Button text="Confirm" fx:id="confirmButton" onMouseClicked="#handleConfirm"/>
+            <Button text="Cancel" fx:id="cancelButton" onMouseClicked="#handleCancel"/>
+        </HBox>
+    </VBox>
+
+
+
+</AnchorPane>

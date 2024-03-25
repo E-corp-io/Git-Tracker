@@ -7,17 +7,29 @@ import com.io.gittracker.model.Repository;
 import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.services.TokenService;
+import java.io.IOException;
 import java.util.ArrayList;
 import javafx.application.HostServices;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -41,6 +53,9 @@ public class MainViewPresenter {
 
     @FXML
     private ListView<String> other;
+
+    @FXML
+    private Label newRepoLabel;
 
     public void initialize() {
         ObservableList<String> items = FXCollections.observableArrayList(
@@ -92,5 +107,23 @@ public class MainViewPresenter {
         tile.getChildren().add(upperRow);
         tile.getChildren().add(lowerRow);
         return tile;
+    }
+
+    @FXML
+    public void handleAddNewRepoClicked(MouseEvent event) throws IOException {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        Node node = (Node) event.getSource();
+        Stage thisStage = (Stage) node.getScene().getWindow();
+        popupStage.initOwner(thisStage);
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/addRepo.fxml")));
+        Scene popupScene = new Scene(root);
+        popupScene
+                .getStylesheets()
+                .add(Objects.requireNonNull(getClass().getResource("/styles/styles.css"))
+                        .toExternalForm());
+        popupStage.setScene(popupScene);
+        popupStage.setTitle("Add new repo");
+        popupStage.show();
     }
 }
