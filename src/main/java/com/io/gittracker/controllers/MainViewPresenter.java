@@ -2,14 +2,10 @@ package com.io.gittracker.controllers;
 
 import com.io.gittracker.UIMain;
 import com.io.gittracker.model.GithubRepository;
-import com.io.gittracker.model.Repository;
 import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.services.TokenService;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import javafx.application.HostServices;
 import javafx.collections.FXCollections;
@@ -38,7 +34,7 @@ public class MainViewPresenter {
     private HostServices hostServices;
 
     @Autowired
-    private void getHostServices(HostServices hostServices) {
+    private void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
     }
 
@@ -79,6 +75,7 @@ public class MainViewPresenter {
 
     public void createTilesFromList() {
         clearTileList();
+        // this attempts to just show all repos for testing purposes
         appStateService.getWorkspaces().stream()
                 .flatMap(workspace -> workspace.getGroups().stream().flatMap(group -> group.getRepositories().stream()))
                 .forEach(repo -> {
