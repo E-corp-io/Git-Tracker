@@ -2,6 +2,7 @@ package com.io.gittracker.model;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,7 @@ public final class AppState implements Serializable {
      * creates a default empty appState
      */
     public AppState() {
-         this(new ArrayList<>(), 0, 0, new Date());
+        this(new ArrayList<>(), 0, 0, new Date());
     }
 
     public AppState(List<Workspace> workspaces, int currentWorkspaceIndex, int currentGroupIndex, Date lastUpdate) {
@@ -62,6 +63,19 @@ public final class AppState implements Serializable {
 
     public void addWorkspace(Workspace workspace) {
         workspaces.add(workspace);
+    }
+
+    public boolean checkIfWorkspaceExists(String name) {
+        for (Workspace workspace : workspaces) {
+            if (workspace.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addNewRepo(String name, String url, String workspace, String group, LocalDate dueDate) {
+        // check if workspace and group exist, if not - create them, create new repository, add where needed
     }
 
     public int getCurrentWorkspaceIndex() {

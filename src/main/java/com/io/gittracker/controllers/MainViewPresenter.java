@@ -1,42 +1,35 @@
 package com.io.gittracker.controllers;
 
 import com.io.gittracker.UIMain;
-import com.io.gittracker.model.AppState;
 import com.io.gittracker.model.GithubRepository;
-import com.io.gittracker.model.Repository;
 import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.services.TokenService;
 import java.io.IOException;
-import java.util.ArrayList;
-import javafx.application.HostServices;
-import java.util.Date;
-import java.util.List;
 import java.util.Objects;
+import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import org.springframework.beans.factory.annotation.Autowired;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MainViewPresenter {
     private final TokenService tokenService;
     private final UIMain uiMain;
-//    private AppState appState = new AppState();
     private final AppStateService appStateService;
     private HostServices hostServices;
 
@@ -82,9 +75,11 @@ public class MainViewPresenter {
 
     public void createTilesFromList() {
         clearTileList();
-        appStateService.getWorkspaces().stream().flatMap(workspace -> workspace.getGroups().stream().flatMap(group -> group.getRepositories().stream())).forEach(repo -> {
-            repoBox.getChildren().add(createTile(repo));
-        });
+        appStateService.getWorkspaces().stream()
+                .flatMap(workspace -> workspace.getGroups().stream().flatMap(group -> group.getRepositories().stream()))
+                .forEach(repo -> {
+                    repoBox.getChildren().add(createTile(repo));
+                });
     }
 
     private void clearTileList() {
