@@ -34,7 +34,7 @@ public class MainViewPresenter {
     private HostServices hostServices;
 
     @Autowired
-    private void getHostServices(HostServices hostServices) {
+    private void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
     }
 
@@ -92,6 +92,7 @@ public class MainViewPresenter {
         HBox upperRow = new HBox();
         HBox lowerRow = new HBox();
         Label repoName = new Label(repo.getName());
+        repoName.getStyleClass().add("clickable");
         repoName.setOnMouseClicked(event -> {
             System.out.println(repo.getHtmlUrl().toString());
             this.hostServices.showDocument(repo.getHtmlUrl().toString());

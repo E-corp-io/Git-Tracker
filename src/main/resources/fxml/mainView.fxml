@@ -19,9 +19,9 @@
    <top>
       <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
           <HBox>
-              <Label text="Settings" />
+              <Label styleClass="clickable" text="Settings" />
               <Region HBox.hgrow="ALWAYS" />
-              <Label fx:id="newRepoLabel" text="Add new repo" onMouseClicked="#handleAddNewRepoClicked"/>
+              <Label styleClass="clickable" fx:id="newRepoLabel" text="Add new repo" onMouseClicked="#handleAddNewRepoClicked"/>
           </HBox>
 
           <Label text="Sorting options" />

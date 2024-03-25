@@ -80,3 +80,8 @@ Button:pressed {
 .repoTile {
     -fx-background-color: #686c74;
 }
+
+.clickable {
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
