@@ -33,7 +33,14 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'dev.dirs:directories:26'
+    implementation 'org.kohsuke:github-api:1.320'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.register('addPrePushGitHook', Copy) {
+    from ".scripts/pre-push"
+    into ".git/hooks"
+    fileMode 0777
 }
 
 tasks.named('test') {

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 public class MainViewPresenter {
     private final TokenService tokenService;
     private final UIMain uiMain;
+    private AppState appState = new AppState();
 
     private HostServices hostServices;
 
@@ -32,14 +33,6 @@ public class MainViewPresenter {
     private void getHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
     }
-
-    private AppState appState = new AppState(
-            new ArrayList<>(List.of(
-                    new Workspace("Inżynieria Oprogramowania", null), new Workspace("Technologie obiektowe", null))),
-            0,
-            0,
-            0,
-            new Date());
 
     @FXML
     private ListView<String> classes;
@@ -54,11 +47,13 @@ public class MainViewPresenter {
         ObservableList<String> items = FXCollections.observableArrayList(
                 appState.getWorkspaces().stream().map(Workspace::getName).toList());
         // Add sample items to the lists
+        Workspace io = new Workspace("Inżynieria Oprogramowania");
+        Workspace to = new Workspace("Technologie obiektowe");
+        appState.addWorkspace(io);
+        appState.addWorkspace(to);
         classes.setItems(items);
         groups.getItems().addAll("Grupa 1", "Grupa 2", "Grupa 4", "Grupa 4");
         other.getItems().addAll("Graded", "Not Graded", "Overdue", "Not Overdue");
-        initTestRepoList();
-        createTilesFromList();
     }
 
     public MainViewPresenter(TokenService tokenService, UIMain uiMain) {
