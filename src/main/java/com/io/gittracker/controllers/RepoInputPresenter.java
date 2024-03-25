@@ -8,6 +8,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,9 +32,10 @@ public class RepoInputPresenter {
     @FXML
     private TextField inputRepo;
 
-    private final AppStateService appStateService;
+    private AppStateService appStateService;
 
-    public RepoInputPresenter(AppStateService appStateService) {
+    @Autowired
+    public void setAppStateService(AppStateService appStateService) {
         this.appStateService = appStateService;
     }
 

@@ -23,16 +23,16 @@
     <top>
         <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
             <HBox>
-                <Label text="Settings"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Label fx:id="newRepoLabel" text="Add new repo" onMouseClicked="#handleAddNewRepoClicked"/>
+                <Label styleClass="clickable" text="Settings" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label styleClass="clickable" fx:id="newRepoLabel" text="Add new repo" onMouseClicked="#handleAddNewRepoClicked"/>
             </HBox>
 
             <Label text="Sorting options"/>
         </VBox>
     </top>
     <center>
-       <TilePane fx:id="repoBox" styleClass="vboxCenter, margin" BorderPane.alignment="CENTER">
-       </TilePane>
+        <TilePane fx:id="repoBox" styleClass="vboxCenter, margin" BorderPane.alignment="CENTER">
+        </TilePane>
     </center>
 </BorderPane>

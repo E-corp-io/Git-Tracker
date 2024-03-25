@@ -2,7 +2,6 @@ package com.io.gittracker;
 
 import com.io.gittracker.utils.StageReadyEvent;
 import java.io.IOException;
-import java.util.Objects;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
