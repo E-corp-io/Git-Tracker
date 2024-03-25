@@ -75,6 +75,7 @@ public class MainViewPresenter {
 
     public void createTilesFromList() {
         clearTileList();
+        // this attempts to just show all repos for testing purposes
         appStateService.getWorkspaces().stream()
                 .flatMap(workspace -> workspace.getGroups().stream().flatMap(group -> group.getRepositories().stream()))
                 .forEach(repo -> {
