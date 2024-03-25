@@ -1,9 +1,10 @@
 package com.io.gittracker.controllers;
 
 import com.io.gittracker.UIMain;
-import com.io.gittracker.model.AppState;
+import com.io.gittracker.model.GithubRepository;
 import com.io.gittracker.model.Repository;
 import com.io.gittracker.model.Workspace;
+import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.services.TokenService;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -33,8 +34,7 @@ import org.springframework.stereotype.Component;
 public class MainViewPresenter {
     private final TokenService tokenService;
     private final UIMain uiMain;
-    private AppState appState = new AppState();
-
+    private final AppStateService appStateService;
     private HostServices hostServices;
 
     @Autowired
@@ -56,73 +56,50 @@ public class MainViewPresenter {
 
     public void initialize() {
         ObservableList<String> items = FXCollections.observableArrayList(
-                appState.getWorkspaces().stream().map(Workspace::getName).toList());
+                appStateService.getWorkspaces().stream().map(Workspace::getName).toList());
         // Add sample items to the lists
         Workspace io = new Workspace("Inżynieria Oprogramowania");
         Workspace to = new Workspace("Technologie obiektowe");
-        appState.addWorkspace(io);
-        appState.addWorkspace(to);
+        appStateService.getAppState().addWorkspace(io);
+        appStateService.getAppState().addWorkspace(to);
         classes.setItems(items);
         groups.getItems().addAll("Grupa 1", "Grupa 2", "Grupa 4", "Grupa 4");
         other.getItems().addAll("Graded", "Not Graded", "Overdue", "Not Overdue");
-        initTestRepoList();
         createTilesFromList();
     }
 
-    public MainViewPresenter(TokenService tokenService, UIMain uiMain) {
+    public MainViewPresenter(TokenService tokenService, UIMain uiMain, AppStateService appStateService) {
         this.tokenService = tokenService;
         this.uiMain = uiMain;
+        this.appStateService = appStateService;
     }
 
     @FXML
     private TilePane repoBox;
 
-    private ArrayList<Repository> repoList =
-            new ArrayList<>(); // change to observable list once it actually changes + connect to the model
-
-    public void initTestRepoList() { // just for testing purposes
-        Repository repo1 = new Repository(
-                "Git-tracker",
-                "https://github.com/E-corp-io/Git-Tracker",
-                4.0f,
-                "",
-                LocalDate.of(2024, 4, 25),
-                new ArrayList<String>(List.of("graded")),
-                "Inżynieria oprogramowania",
-                "Grupa 6");
-        repoList.add(repo1);
-        Repository repo2 = new Repository(
-                "Git-tracker2",
-                "https://github.com/E-corp-io/Git-Tracker",
-                3.0f,
-                "",
-                LocalDate.of(2024, 4, 25),
-                new ArrayList<String>(List.of("graded")),
-                "Inżynieria oprogramowania",
-                "Grupa 6");
-        repoList.add(repo2);
-    }
-
     public void createTilesFromList() {
         clearTileList();
-        repoList.forEach(repo -> {
-            repoBox.getChildren().add(createTile(repo));
-        });
+        appStateService.getWorkspaces().stream()
+                .flatMap(workspace -> workspace.getGroups().stream().flatMap(group -> group.getRepositories().stream()))
+                .forEach(repo -> {
+                    repoBox.getChildren().add(createTile(repo));
+                });
     }
 
     private void clearTileList() {
         this.repoBox.getChildren().clear();
     }
 
-    private VBox createTile(Repository repo) {
+    private VBox createTile(GithubRepository repo) {
         VBox tile = new VBox();
         tile.getStyleClass().add("repoTile");
         HBox upperRow = new HBox();
         HBox lowerRow = new HBox();
-        Label repoName = new Label(repo.getGithubName());
+        Label repoName = new Label(repo.getName());
+        repoName.getStyleClass().add("clickable");
         repoName.setOnMouseClicked(event -> {
-            System.out.println(repo.getUrl());
-            this.hostServices.showDocument(repo.getUrl());
+            System.out.println(repo.getHtmlUrl().toString());
+            this.hostServices.showDocument(repo.getHtmlUrl().toString());
         });
         Label lastCommit = new Label("last commit msg should go here");
         upperRow.getChildren().add(repoName);

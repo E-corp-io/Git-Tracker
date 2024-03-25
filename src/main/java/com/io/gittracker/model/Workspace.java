@@ -25,6 +25,15 @@ public final class Workspace implements Serializable, Refreshable {
         groups.add(group);
     }
 
+    public boolean checkIfWorkspaceExists(String name) {
+        for (Group group : groups) {
+            if (group.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<GithubRepository> getAllRepositories() {
         return groups.stream()
                 .flatMap(group -> group.getRepositories().stream())

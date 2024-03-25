@@ -76,3 +76,12 @@ Button:hover {
 Button:pressed {
     -fx-background-color: #004080;
 }
+
+.repoTile {
+    -fx-background-color: #686c74;
+}
+
+.clickable {
+    -fx-underline: true;
+    -fx-cursor: hand;
+}

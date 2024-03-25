@@ -1,5 +1,6 @@
 package com.io.gittracker.controllers;
 
+import com.io.gittracker.services.AppStateService;
 import java.time.LocalDate;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -30,6 +31,12 @@ public class RepoInputPresenter {
     @FXML
     private TextField inputRepo;
 
+    private final AppStateService appStateService;
+
+    public RepoInputPresenter(AppStateService appStateService) {
+        this.appStateService = appStateService;
+    }
+
     @FXML
     private void handleConfirm(MouseEvent mouseEvent) {
         String address = inputRepo.getText();
@@ -39,6 +46,7 @@ public class RepoInputPresenter {
 
         System.out.println("Addr: " + address + "; workspace: " + workspace + "; group: " + group + "; due on: "
                 + dueDate.toString());
+        // actually add to appstate somehow
         ((Stage) this.cancelButton.getScene().getWindow()).close();
     }
 
