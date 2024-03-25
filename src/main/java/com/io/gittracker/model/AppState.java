@@ -21,7 +21,7 @@ public final class AppState implements Serializable {
      * creates a default empty appState
      */
     public AppState() {
-        this(new ArrayList<>(), 0, 0, new Date());
+         this(new ArrayList<>(), 0, 0, new Date());
     }
 
     public AppState(List<Workspace> workspaces, int currentWorkspaceIndex, int currentGroupIndex, Date lastUpdate) {
