@@ -6,7 +6,6 @@ import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.services.TokenService;
 import java.io.IOException;
-import java.util.Objects;
 import javafx.application.HostServices;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -63,7 +62,7 @@ public class MainViewPresenter {
         classes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-//                System.out.println("Selected value changed: " + newValue);
+                //                System.out.println("Selected value changed: " + newValue);
                 setCurrentWorkspace(newValue);
                 createTilesFromList();
             }
@@ -76,23 +75,22 @@ public class MainViewPresenter {
         createTilesFromList();
     }
 
-
     private Workspace currentWorkspace;
 
     private void setCurrentWorkspace(String name) {
         this.currentWorkspace = this.appStateService.getAppState().getWorkspaceByName(name);
     }
+
     private void setWorkspaceList() {
         this.workspaces.addAll(
                 appStateService.getWorkspaces().stream().map(Workspace::getName).toList());
         classes.setItems(workspaces);
     }
 
-    public void setList(){
+    public void setList() {
         clearTileList();
         ObservableList<String> items = FXCollections.observableArrayList(
-                appStateService.getWorkspaces().stream().map(Workspace::getName).toList()
-        );
+                appStateService.getWorkspaces().stream().map(Workspace::getName).toList());
         classes.setItems(items);
         createTilesFromList();
     }
@@ -108,12 +106,16 @@ public class MainViewPresenter {
 
     public void createTilesFromList() {
         clearTileList();
-        if (this.currentWorkspace == null) {return;}
-        this.currentWorkspace.getGroups().stream().flatMap(group -> group.getRepositories().stream()).forEach(repo -> {
-            if (repo != null) {
-                repoBox.getChildren().add(createTile(repo));
-            }
-        });
+        if (this.currentWorkspace == null) {
+            return;
+        }
+        this.currentWorkspace.getGroups().stream()
+                .flatMap(group -> group.getRepositories().stream())
+                .forEach(repo -> {
+                    if (repo != null) {
+                        repoBox.getChildren().add(createTile(repo));
+                    }
+                });
     }
 
     private void clearTileList() {

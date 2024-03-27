@@ -24,8 +24,10 @@ public class GithubService {
         this.appStateService = appStateService;
         this.tokenService = tokenService;
     }
+
     public void setGitHub() throws IOException {
-        this.gitHub = new GitHubBuilder().withOAuthToken(tokenService.getApiKey()).build();
+        this.gitHub =
+                new GitHubBuilder().withOAuthToken(tokenService.getApiKey()).build();
     }
 
     /**
