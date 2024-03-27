@@ -8,6 +8,8 @@ import com.io.gittracker.services.TokenService;
 import java.io.IOException;
 import java.util.Objects;
 import javafx.application.HostServices;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -50,19 +52,40 @@ public class MainViewPresenter {
     @FXML
     private Label newRepoLabel;
 
+    private final ObservableList<String> workspaces = FXCollections.observableArrayList();
+
     public void initialize() {
         Workspace io = new Workspace("Inżynieria Oprogramowania");
         Workspace to = new Workspace("Technologie obiektowe");
         appStateService.getAppState().addWorkspace(io);
         appStateService.getAppState().addWorkspace(to);
-        ObservableList<String> items = FXCollections.observableArrayList(
-                appStateService.getWorkspaces().stream().map(Workspace::getName).toList());
-        // Add sample items to the lists
 
-        classes.setItems(items);
+        classes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+//                System.out.println("Selected value changed: " + newValue);
+                setCurrentWorkspace(newValue);
+                createTilesFromList();
+            }
+        });
+
+        // Add sample items to the lists
+        setWorkspaceList();
         groups.getItems().addAll("Grupa 1", "Grupa 2", "Grupa 4", "Grupa 4");
         other.getItems().addAll("Graded", "Not Graded", "Overdue", "Not Overdue");
         createTilesFromList();
+    }
+
+
+    private Workspace currentWorkspace;
+
+    private void setCurrentWorkspace(String name) {
+        this.currentWorkspace = this.appStateService.getAppState().getWorkspaceByName(name);
+    }
+    private void setWorkspaceList() {
+        this.workspaces.addAll(
+                appStateService.getWorkspaces().stream().map(Workspace::getName).toList());
+        classes.setItems(workspaces);
     }
 
     public void setList(){
@@ -85,12 +108,12 @@ public class MainViewPresenter {
 
     public void createTilesFromList() {
         clearTileList();
-        // this attempts to just show all repos for testing purposes
-        appStateService.getWorkspaces().stream()
-                .flatMap(workspace -> workspace.getGroups().stream().flatMap(group -> group.getRepositories().stream()))
-                .forEach(repo -> {
-                    repoBox.getChildren().add(createTile(repo));
-                });
+        if (this.currentWorkspace == null) {return;}
+        this.currentWorkspace.getGroups().stream().flatMap(group -> group.getRepositories().stream()).forEach(repo -> {
+            if (repo != null) {
+                repoBox.getChildren().add(createTile(repo));
+            }
+        });
     }
 
     private void clearTileList() {

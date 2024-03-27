@@ -73,8 +73,13 @@ public final class AppState implements Serializable {
         return workspace;
     }
 
-    public void addNewRepo(String name, String url, String workspace, String group, LocalDate dueDate) {
-        // check if workspace and group exist, if not - create them, create new repository, add where needed
+    public Workspace getWorkspaceByName(String name) {
+        for (Workspace workspace : workspaces) {
+            if (workspace.getName().equals(name)) {
+                return workspace;
+            }
+        }
+        return null;
     }
 
     public int getCurrentWorkspaceIndex() {
