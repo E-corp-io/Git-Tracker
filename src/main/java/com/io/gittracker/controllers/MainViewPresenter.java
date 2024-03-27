@@ -70,6 +70,7 @@ public class MainViewPresenter {
                 appStateService.getWorkspaces().stream().map(Workspace::getName).toList()
         );
         classes.setItems(items);
+        createTilesFromList();
     }
 
     public MainViewPresenter(TokenService tokenService, UIMain uiMain, AppStateService appStateService) {
