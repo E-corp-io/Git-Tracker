@@ -7,6 +7,15 @@
     -fx-text-fill: #ffffff;
     -fx-background-color: #686c74;
 }
+
+.list-cell:hover {
+    -fx-background-color: #373a43;
+}
+
+.list-cell:selected {
+    -fx-background-color: #d7a31a;
+}
+
 .list-view{
     -fx-pref-height: 500px;
     -fx-min-width: 20%;
@@ -79,6 +88,7 @@ Button:pressed {
 
 .repoTile {
     -fx-background-color: #686c74;
+    -fx-pref-width: 700;
 }
 
 .clickable {
