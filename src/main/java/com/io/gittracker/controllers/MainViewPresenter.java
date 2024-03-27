@@ -53,11 +53,6 @@ public class MainViewPresenter {
     public void initialize() {
         ObservableList<String> items = FXCollections.observableArrayList(
                 appStateService.getWorkspaces().stream().map(Workspace::getName).toList());
-        // Add sample items to the lists
-        Workspace io = new Workspace("Inżynieria Oprogramowania");
-        Workspace to = new Workspace("Technologie obiektowe");
-        appStateService.getAppState().addWorkspace(io);
-        appStateService.getAppState().addWorkspace(to);
         classes.setItems(items);
         groups.getItems().addAll("Grupa 1", "Grupa 2", "Grupa 4", "Grupa 4");
         other.getItems().addAll("Graded", "Not Graded", "Overdue", "Not Overdue");
