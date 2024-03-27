@@ -14,7 +14,14 @@
     <VBox>
         <HBox>
             <Label text="Enter repository address:"/>
-            <TextField fx:id="inputRepo"/>
+            <TextField fx:id="repo_url" onTextChange="#userTyped"/>
+        </HBox>
+        <HBox>
+            <Label fx:id="platform"/>
+            <Label text="/"/>
+            <Label fx:id="repo_owner"/>
+            <Label text="/"/>
+            <Label fx:id="repo_name"/>
         </HBox>
         <HBox>
             <Label text="Workspace:"/>

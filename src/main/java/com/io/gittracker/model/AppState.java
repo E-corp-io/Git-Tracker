@@ -15,6 +15,7 @@ public final class AppState implements Serializable {
     private final List<Workspace> workspaces;
     private int currentWorkspaceIndex;
     private int currentGroupIndex;
+    public String githubToken = "EMPTY";
 
     private final Date lastUpdate;
 
@@ -23,6 +24,16 @@ public final class AppState implements Serializable {
      */
     public AppState() {
         this(new ArrayList<>(), 0, 0, new Date());
+    }
+
+    public static AppState createDefault() {
+        AppState appState = new AppState();
+        // Add sample items to the lists
+        Workspace io = new Workspace("Inżynieria Oprogramowania");
+        Workspace to = new Workspace("Technologie obiektowe");
+        appState.addWorkspace(io);
+        appState.addWorkspace(to);
+        return appState;
     }
 
     public AppState(List<Workspace> workspaces, int currentWorkspaceIndex, int currentGroupIndex, Date lastUpdate) {
