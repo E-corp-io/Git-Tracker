@@ -1,7 +1,11 @@
 package com.io.gittracker.model;
 
+import com.google.gson.*;
 import dev.dirs.ProjectDirectories;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +13,7 @@ public class PermaStorage {
     private final String path;
 
     Logger logger = LoggerFactory.getLogger(PermaStorage.class);
+    Gson gson = new GsonBuilder().serializeNulls().create();
 
     public PermaStorage() {
         ProjectDirectories myProjDirs = ProjectDirectories.from("com", "Ecorp", "GitTracker");
@@ -16,31 +21,40 @@ public class PermaStorage {
         if (!directory.exists()) {
             directory.mkdirs();
         }
-        path = myProjDirs.configDir + "/appState.ser";
+        path = myProjDirs.configDir + "/appState.json";
+        logger.info("Using config path: '{}'", path);
     }
 
     public void saveState(AppState appState) {
-        logger.debug("Saving app state");
+        logger.debug("Saving app state...");
         File f = new File(path);
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f))) {
-            oos.writeObject(appState);
-        } catch (IOException ex) {
-            logger.error("failed to save app state {}", appState, ex);
-            throw new RuntimeException(ex);
+
+        String json = gson.toJson(appState);
+        logger.info("App state json: {}", json);
+        try {
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(json.getBytes());
+        } catch (Exception e) { // TODO: split into exceptions
+            logger.error("Saving state failed with", e);
         }
+
+        logger.debug("App state saved");
     }
 
     public AppState readState() {
         logger.debug("Reading app state");
-        AppState appState;
-        File f = new File(path);
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
-            appState = (AppState) ois.readObject();
+
+        AppState appState = new AppState();
+        try {
+            File f = new File(path);
+            FileInputStream fis = new FileInputStream(f);
+            String json = new String(fis.readAllBytes());
+
+            appState = gson.fromJson(json, AppState.class);
         } catch (Exception e) {
-            logger.error("failed to read app state, creating new state...");
-            appState = new AppState();
-            saveState(appState);
+            logger.error("Loading state failed with", e);
         }
+
         return appState;
     }
 }
