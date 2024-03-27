@@ -1,5 +1,6 @@
 package com.io.gittracker;
 
+import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.utils.StageReadyEvent;
 import javafx.application.Application;
 import javafx.application.HostServices;
@@ -40,6 +41,8 @@ public class UIApplication extends Application {
 
     @Override
     public void stop() {
+        AppStateService service = context.getBean(AppStateService.class);
+        service.saveAppState();
         context.close();
         Platform.exit();
     }
