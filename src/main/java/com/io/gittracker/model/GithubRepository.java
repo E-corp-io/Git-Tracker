@@ -20,7 +20,7 @@ public class GithubRepository implements Refreshable, Serializable {
     private String name;
     private final Map<Long, PullRequest> pullRequestsMap = new HashMap<>();
     private final List<String> labels = new ArrayList<>();
-    private Workspace.Group workspaceGroup;
+    private Group workspaceGroup; // TODO: remove
     transient Logger logger = LoggerFactory.getLogger(GithubRepository.class);
 
     private final transient GithubService githubService;
@@ -46,7 +46,7 @@ public class GithubRepository implements Refreshable, Serializable {
         }
     }
 
-    public void setWorkspaceGroup(Workspace.Group workspaceGroup) {
+    public void setWorkspaceGroup(Group workspaceGroup) {
         this.workspaceGroup = workspaceGroup;
     }
 
@@ -96,7 +96,7 @@ public class GithubRepository implements Refreshable, Serializable {
         return id;
     }
 
-    public Workspace.Group getWorkspaceGroup() {
+    public Group getWorkspaceGroup() {
         return workspaceGroup;
     }
 

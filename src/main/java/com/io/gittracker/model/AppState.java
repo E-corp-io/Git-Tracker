@@ -11,6 +11,7 @@ public final class AppState implements Serializable {
     private final List<Workspace> workspaces;
     private int currentWorkspaceIndex;
     private int currentGroupIndex;
+    public String githubToken = "EMPTY";
 
     private final Date lastUpdate;
 
