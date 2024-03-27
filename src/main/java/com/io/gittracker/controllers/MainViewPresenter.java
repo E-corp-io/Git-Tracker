@@ -58,13 +58,33 @@ public class MainViewPresenter {
     private final ObservableList<String> workspaces = FXCollections.observableArrayList();
 
     public void initialize() {
+        if (appStateService.getAppState().getWorkspaces().isEmpty()){
+            createDefaultContent();
+        }
+
+        classes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                System.out.println("Selected value changed: " + newValue);
+                setCurrentWorkspace(newValue);
+                createTilesFromList();
+            }
+        });
+
+        // Add sample items to the lists
+        setWorkspaceList();
+        groups.getItems().addAll("Grupa 1", "Grupa 2", "Grupa 4", "Grupa 4");
+        other.getItems().addAll("Graded", "Not Graded", "Overdue", "Not Overdue");
+        createTilesFromList();
+    }
+
+    void createDefaultContent() {
         Workspace io = new Workspace("Inżynieria Oprogramowania");
         Workspace to = new Workspace("Technologie obiektowe");
         Workspace os = new Workspace("Open Source");
-        try {
-            githubService.setGitHub();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (githubService.getGitHub() == null){
+            System.err.println("Github should not be null here!");
+            return;
         }
 
         io.addRepositoryToDefaultGroup(githubService.getRepository("E-corp-io/Git-Tracker"));

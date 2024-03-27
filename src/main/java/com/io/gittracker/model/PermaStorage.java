@@ -48,10 +48,11 @@ public class PermaStorage {
             String json = new String(fis.readAllBytes());
 
             appState = gson.fromJson(json, AppState.class);
+            return appState;
+
         } catch (Exception e) {
             logger.error("Loading state failed with", e);
+            return AppState.createDefault();
         }
-
-        return appState;
     }
 }
