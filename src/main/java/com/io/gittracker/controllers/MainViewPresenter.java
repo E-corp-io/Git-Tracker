@@ -51,17 +51,25 @@ public class MainViewPresenter {
     private Label newRepoLabel;
 
     public void initialize() {
-        ObservableList<String> items = FXCollections.observableArrayList(
-                appStateService.getWorkspaces().stream().map(Workspace::getName).toList());
-        // Add sample items to the lists
         Workspace io = new Workspace("Inżynieria Oprogramowania");
         Workspace to = new Workspace("Technologie obiektowe");
         appStateService.getAppState().addWorkspace(io);
         appStateService.getAppState().addWorkspace(to);
+        ObservableList<String> items = FXCollections.observableArrayList(
+                appStateService.getWorkspaces().stream().map(Workspace::getName).toList());
+        // Add sample items to the lists
+
         classes.setItems(items);
         groups.getItems().addAll("Grupa 1", "Grupa 2", "Grupa 4", "Grupa 4");
         other.getItems().addAll("Graded", "Not Graded", "Overdue", "Not Overdue");
         createTilesFromList();
+    }
+
+    public void setList(){
+        ObservableList<String> items = FXCollections.observableArrayList(
+                appStateService.getWorkspaces().stream().map(Workspace::getName).toList()
+        );
+        classes.setItems(items);
     }
 
     public MainViewPresenter(TokenService tokenService, UIMain uiMain, AppStateService appStateService) {
@@ -113,7 +121,9 @@ public class MainViewPresenter {
         Node node = (Node) event.getSource();
         Stage thisStage = (Stage) node.getScene().getWindow();
         popupStage.initOwner(thisStage);
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/addRepo.fxml")));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/addRepo.fxml"));
+        fxmlLoader.setControllerFactory(uiMain.getApplicationContext()::getBean);
+        Parent root = fxmlLoader.load();
         Scene popupScene = new Scene(root);
         popupStage.setScene(popupScene);
         popupStage.setTitle("Add new repo");

@@ -1,7 +1,15 @@
 package com.io.gittracker.controllers;
 
+import com.io.gittracker.UIMain;
+import com.io.gittracker.model.GithubRepository;
+import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.AppStateService;
+
+import java.io.IOException;
 import java.time.LocalDate;
+
+import com.io.gittracker.services.GithubService;
+import com.io.gittracker.services.TokenService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
@@ -33,22 +41,37 @@ public class RepoInputPresenter {
     private TextField inputRepo;
 
     private AppStateService appStateService;
+    private GithubService githubService;
 
-    @Autowired
-    public void setAppStateService(AppStateService appStateService) {
+    // todo consider removing MainViewPresenter from here
+    private MainViewPresenter mainViewPresenter;
+
+    public RepoInputPresenter(GithubService githubService, AppStateService appStateService, MainViewPresenter mainViewPresenter) {
+        this.githubService = githubService;
         this.appStateService = appStateService;
+        this.mainViewPresenter = mainViewPresenter;
     }
 
     @FXML
-    private void handleConfirm(MouseEvent mouseEvent) {
+    private void handleConfirm(MouseEvent mouseEvent) throws IOException {
         String address = inputRepo.getText();
-        String workspace = inputWorkspace.getText();
+        String workspaceName = inputWorkspace.getText();
         String group = inputGroup.getText();
         LocalDate dueDate = dateInput.getValue();
 
-        System.out.println("Addr: " + address + "; workspace: " + workspace + "; group: " + group + "; due on: "
+        System.out.println("Addr: " + address + "; workspace: " + workspaceName + "; group: " + group + "; due on: "
                 + dueDate.toString());
         // actually add to appstate somehow
+        // todo move this elsewhere
+        this.githubService.setGitHub();
+        var workspace = new Workspace(workspaceName);
+        workspace.addRepositoryToDefaultGroup(githubService.getRepository(address));
+        this.appStateService.getAppState().addWorkspace(workspace);
+        System.out.println("Workspaces");
+        for (Workspace w: this.appStateService.getWorkspaces()){
+            System.out.println(w.getName());
+        }
+        this.mainViewPresenter.setList();
         ((Stage) this.cancelButton.getScene().getWindow()).close();
     }
 

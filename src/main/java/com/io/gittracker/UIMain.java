@@ -52,4 +52,8 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
         }
         rootPane.setCenter(view);
     }
+
+    public ConfigurableApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
 }
