@@ -66,6 +66,7 @@ public class MainViewPresenter {
     }
 
     public void setList(){
+        clearTileList();
         ObservableList<String> items = FXCollections.observableArrayList(
                 appStateService.getWorkspaces().stream().map(Workspace::getName).toList()
         );

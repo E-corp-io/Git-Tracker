@@ -3,10 +3,7 @@ package com.io.gittracker.model;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public final class AppState implements Serializable {
     @Serial
@@ -65,13 +62,15 @@ public final class AppState implements Serializable {
         workspaces.add(workspace);
     }
 
-    public boolean checkIfWorkspaceExists(String name) {
+    public Workspace getOrCreate(String name) {
         for (Workspace workspace : workspaces) {
             if (workspace.getName().equals(name)) {
-                return true;
+                return workspace;
             }
         }
-        return false;
+        var workspace = new Workspace(name);
+        addWorkspace(workspace);
+        return workspace;
     }
 
     public void addNewRepo(String name, String url, String workspace, String group, LocalDate dueDate) {

@@ -64,9 +64,9 @@ public class RepoInputPresenter {
         // actually add to appstate somehow
         // todo move this elsewhere
         this.githubService.setGitHub();
-        var workspace = new Workspace(workspaceName);
+        var appState = this.appStateService.getAppState();
+        var workspace = appState.getOrCreate(workspaceName);
         workspace.addRepositoryToDefaultGroup(githubService.getRepository(address));
-        this.appStateService.getAppState().addWorkspace(workspace);
         System.out.println("Workspaces");
         for (Workspace w: this.appStateService.getWorkspaces()){
             System.out.println(w.getName());
