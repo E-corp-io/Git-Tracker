@@ -45,7 +45,7 @@ public final class Workspace implements Serializable, Refreshable {
     }
 
     public Group createNewGroup(long id, String name) {
-        Group group = new Group(id, name, this);
+        Group group = new Group(id, name);
         groups.add(group);
         return group;
     }
@@ -86,24 +86,23 @@ public final class Workspace implements Serializable, Refreshable {
     }
 
     public Group newGroup(long id, String name) {
-        return new Group(id, name, this);
+        return new Group(id, name);
     }
 
     public Group getDefaultGroup() {
-        return new Group(0, "DEFAULT", this);
+        return new Group(0, "DEFAULT");
     }
 
-    public class Group implements Refreshable, Serializable {
+    public class Group implements Refreshable {
         private final long id;
         private String name;
         private final List<GithubRepository> repositories;
 
-        Workspace workspace;
+        // Workspace workspace;
 
-        public Group(long id, String name, Workspace workspace) {
+        public Group(long id, String name) {
             this.id = id;
             this.name = name;
-            this.workspace = workspace;
             repositories = new ArrayList<>();
         }
 
