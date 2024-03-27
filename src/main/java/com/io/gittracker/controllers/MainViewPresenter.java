@@ -4,6 +4,7 @@ import com.io.gittracker.UIMain;
 import com.io.gittracker.model.GithubRepository;
 import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.AppStateService;
+import com.io.gittracker.services.GithubService;
 import com.io.gittracker.services.TokenService;
 import java.io.IOException;
 import javafx.application.HostServices;
@@ -35,6 +36,9 @@ public class MainViewPresenter {
     private HostServices hostServices;
 
     @Autowired
+    private GithubService githubService;
+
+    @Autowired
     private void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
     }
@@ -56,13 +60,24 @@ public class MainViewPresenter {
     public void initialize() {
         Workspace io = new Workspace("Inżynieria Oprogramowania");
         Workspace to = new Workspace("Technologie obiektowe");
+        Workspace os = new Workspace("Open Source");
+        try {
+            githubService.setGitHub();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        io.addRepositoryToDefaultGroup(githubService.getRepository("E-corp-io/Git-Tracker"));
+        io.addRepositoryToDefaultGroup(githubService.getRepository("E-corp-io/GIT-TRACKER-API-TESTS"));
+        os.addRepositoryToDefaultGroup(githubService.getRepository("nodejs/node"));
         appStateService.getAppState().addWorkspace(io);
         appStateService.getAppState().addWorkspace(to);
+        appStateService.getAppState().addWorkspace(os);
 
         classes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                //                System.out.println("Selected value changed: " + newValue);
+                System.out.println("Selected value changed: " + newValue);
                 setCurrentWorkspace(newValue);
                 createTilesFromList();
             }

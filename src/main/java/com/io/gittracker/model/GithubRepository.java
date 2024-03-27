@@ -109,6 +109,7 @@ public class GithubRepository implements Refreshable, Serializable {
         GHRepository repository = githubService.getRepositoryById(id);
         this.htmlUrl = repository.getHtmlUrl();
         this.name = repository.getName();
-        mergePullRequests(fetchPullRequests());
+        // TODO FIX :)
+        //        mergePullRequests(fetchPullRequests());
     }
 }

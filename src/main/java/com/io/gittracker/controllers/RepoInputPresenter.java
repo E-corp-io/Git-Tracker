@@ -4,13 +4,12 @@ import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.services.GithubService;
 import java.io.IOException;
-import java.time.LocalDate;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import javafx.util.StringConverter;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +19,7 @@ public class RepoInputPresenter {
     public DatePicker dateInput;
 
     @FXML
-    private TextField inputWorkspace;
+    private ComboBox<Workspace> inputWorkspace;
 
     @FXML
     private TextField inputGroup;
@@ -48,21 +47,64 @@ public class RepoInputPresenter {
     }
 
     @FXML
+    void initialize() {
+        inputWorkspace.getItems().addAll(appStateService.getWorkspaces());
+        inputWorkspace.setCellFactory(new Callback<ListView<Workspace>, ListCell<Workspace>>() {
+            @Override
+            public ListCell<Workspace> call(ListView<Workspace> param) {
+                return new ListCell<Workspace>() {
+                    @Override
+                    protected void updateItem(Workspace item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getName());
+                        } else {
+                            setText(null);
+                        }
+                    }
+                };
+            }
+        });
+        inputWorkspace.setConverter(new StringConverter<Workspace>() {
+            @Override
+            public String toString(Workspace object) {
+                return object != null ? object.getName() : "";
+            }
+
+            @Override
+            public Workspace fromString(String string) {
+                if (string == null || string.trim().isEmpty()) {
+                    return null;
+                } else {
+                    return new Workspace(string);
+                }
+            }
+        });
+    }
+
+    @FXML
     private void handleConfirm(MouseEvent mouseEvent) throws IOException {
         String address = inputRepo.getText();
-        String workspaceName = inputWorkspace.getText();
+        Workspace workspace = inputWorkspace.getValue();
+        if(workspace == null)
+            return;
         String group = inputGroup.getText();
-        LocalDate dueDate = dateInput.getValue();
-
-        System.out.println("Addr: " + address + "; workspace: " + workspaceName + "; group: " + group + "; due on: "
-                + dueDate.toString());
-        // actually add to appstate somehow
+        System.out.println(
+                "Addr: " + address + "; workspace: " + workspace.getName() + "; group: " + group + "; due on: ");
         // todo move this elsewhere
         this.githubService.setGitHub();
-        var appState = this.appStateService.getAppState();
-        var workspace = appState.getOrCreate(workspaceName);
         workspace.addRepositoryToDefaultGroup(githubService.getRepository(address));
-        System.out.println("Workspaces");
+
+        boolean added = false;
+        for (Workspace workspace1 : appStateService.getWorkspaces()) {
+            if (workspace1.getName().equals(workspace.getName())) {
+                added = true;
+                workspace.getAllRepositories().forEach(workspace1::addRepositoryToDefaultGroup);
+            }
+        }
+        if (!added) {
+            appStateService.getAppState().addWorkspace(workspace);
+        }
         for (Workspace w : this.appStateService.getWorkspaces()) {
             System.out.println(w.getName());
         }
