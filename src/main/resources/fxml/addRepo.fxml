@@ -19,12 +19,12 @@
      </rowConstraints>
       <children>
             <Label text="Enter repository address:" GridPane.rowIndex="1" />
-            <TextField fx:id="inputRepo" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="inputRepo" onKeyTyped="#userTyped" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Workspace:" GridPane.rowIndex="2" />
             <ComboBox fx:id="inputWorkspace" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label disable="true" text="Group:" GridPane.rowIndex="3" />
             <TextField disable="true" fx:id="inputGroup" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-         <Label alignment="CENTER" text="Add new repository" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
+         <Label alignment="CENTER" text="Add new repository: " fx:id="add_new_repo_msg" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
             <Button fx:id="confirmButton" onMouseClicked="#handleConfirm" text="Confirm" GridPane.rowIndex="5" />
             <Button fx:id="cancelButton" onMouseClicked="#handleCancel" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
       </children>

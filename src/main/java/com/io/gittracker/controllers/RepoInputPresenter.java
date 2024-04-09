@@ -4,8 +4,12 @@ import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.services.GithubService;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Optional;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -17,6 +21,9 @@ public class RepoInputPresenter {
 
     @FXML
     public DatePicker dateInput;
+
+    @FXML
+    public Label add_new_repo_msg;
 
     @FXML
     private ComboBox<Workspace> inputWorkspace;
@@ -36,6 +43,10 @@ public class RepoInputPresenter {
     private AppStateService appStateService;
     private GithubService githubService;
 
+    Optional<String> platform = Optional.empty();
+    Optional<String> repo_owner = Optional.empty();
+    Optional<String> repo_name = Optional.empty();
+
     // todo consider removing MainViewPresenter from here
     private MainViewPresenter mainViewPresenter;
 
@@ -48,6 +59,11 @@ public class RepoInputPresenter {
 
     @FXML
     void initialize() {
+        confirmButton.setDisable(true);
+        inputWorkspace.onActionProperty().set(event -> {
+            confirmButton.setDisable(ShouldConfirmBeDisabled());
+        });
+
         inputWorkspace.getItems().addAll(appStateService.getWorkspaces());
         inputWorkspace.setCellFactory(new Callback<ListView<Workspace>, ListCell<Workspace>>() {
             @Override
@@ -86,12 +102,21 @@ public class RepoInputPresenter {
     private void handleConfirm(MouseEvent mouseEvent) throws IOException {
         String address = inputRepo.getText();
         Workspace workspace = inputWorkspace.getValue();
-        if (workspace == null) return;
+        if (workspace == null) return; // Should not happen
         String group = inputGroup.getText();
         System.out.println(
                 "Addr: " + address + "; workspace: " + workspace.getName() + "; group: " + group + "; due on: ");
         // todo move this elsewhere
-        workspace.addRepositoryToDefaultGroup(githubService.getRepository(address));
+
+        if (repo_owner.isEmpty() || repo_name.isEmpty()) {
+            System.err.println("Error: repo_owner or repo_name is empty");
+            return;
+        }
+
+        var owner_slash_repo_name = String.format("%s/%s", repo_owner.get(), repo_name.get());
+        workspace.addRepositoryToDefaultGroup(githubService.getRepository(owner_slash_repo_name));
+
+        // TODO: make adding async - the repo url may be bad!
 
         boolean added = false;
         for (Workspace workspace1 : appStateService.getWorkspaces()) {
@@ -113,5 +138,64 @@ public class RepoInputPresenter {
     @FXML
     private void handleCancel(MouseEvent mouseEvent) {
         ((Stage) this.cancelButton.getScene().getWindow()).close();
+    }
+
+    private boolean ShouldConfirmBeDisabled() {
+        Workspace workspace = inputWorkspace.getValue();
+        boolean bad_workspace = workspace == null;
+        boolean bad_platform = platform.isEmpty();
+        boolean bad_repo_owner = repo_owner.isEmpty();
+        boolean bad_repo_name = repo_name.isEmpty();
+        return bad_workspace || bad_platform || bad_repo_owner || bad_repo_name;
+    }
+
+    public void parseUrl(String urlString) {
+        System.out.printf("Got url: %s\n", urlString);
+        try {
+            URL url = new URL(urlString);
+            String host = url.getHost();
+            int port = url.getPort();
+            if (port <= 0) {
+                port = url.getDefaultPort();
+            }
+            String path = url.getPath();
+
+            switch (host) {
+                case "github.com":
+                    platform = Optional.of("Github");
+                    break;
+
+                default:
+                    platform = Optional.empty();
+                    break;
+            }
+
+            String[] path_segments = path.split("/");
+            if (path_segments.length < 3) {
+                repo_owner = Optional.empty();
+                repo_name = Optional.empty();
+            } else {
+                // GOOD case
+                repo_owner = Optional.of(path_segments[1]);
+                repo_name = Optional.of(path_segments[2]);
+            }
+
+            return;
+        } catch (MalformedURLException e) {
+            // Just ignore it
+        }
+        platform = Optional.empty();
+        repo_owner = Optional.empty();
+        repo_name = Optional.empty();
+    }
+
+    public void userTyped(KeyEvent _keyEvent) {
+        parseUrl(inputRepo.getText().trim());
+        var new_text = String.format(
+                "Add new repository: %s/%s/%s",
+                platform.orElseGet(() -> "?"), repo_owner.orElseGet(() -> "?"), repo_name.orElseGet(() -> "?"));
+        this.add_new_repo_msg.setText(new_text);
+
+        confirmButton.setDisable(ShouldConfirmBeDisabled());
     }
 }

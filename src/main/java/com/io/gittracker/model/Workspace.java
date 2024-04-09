@@ -51,6 +51,7 @@ public final class Workspace implements Serializable, Refreshable {
     }
 
     public void addRepositoryToDefaultGroup(GithubRepository repository) {
+        if (repository == null) return;
         groups.get(0).addRepository(repository);
     }
 
