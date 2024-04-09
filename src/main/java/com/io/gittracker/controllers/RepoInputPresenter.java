@@ -92,7 +92,6 @@ public class RepoInputPresenter {
         System.out.println(
                 "Addr: " + address + "; workspace: " + workspace.getName() + "; group: " + group + "; due on: ");
         // todo move this elsewhere
-        this.githubService.setGitHub();
         workspace.addRepositoryToDefaultGroup(githubService.getRepository(address));
 
         boolean added = false;
