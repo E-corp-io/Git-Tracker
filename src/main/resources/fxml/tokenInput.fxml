@@ -3,16 +3,18 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane styleClass="header-section"
+<BorderPane styleClass="root"
             xmlns="http://javafx.com/javafx/17.0.2-ea"
             xmlns:fx="http://javafx.com/fxml/1"
             stylesheets="@../styles/styles.css"
             fx:controller="com.io.gittracker.controllers.TokenInputPresenter">
     <center>
-        <VBox>
+        <VBox styleClass="vbox, margin">
             <Label text="Type your github token" />
             <TextField fx:id="ghToken" />
-            <Button onAction="#submitApiKey" text="Submit" />
+            <Button fx:id="submitButton" onAction="#submitApiKey" text="Submit" />
+            <ProgressIndicator fx:id="progressIndicator" visible="false"/>
+            <Label fx:id="error_string" />
         </VBox>
     </center>
 </BorderPane>

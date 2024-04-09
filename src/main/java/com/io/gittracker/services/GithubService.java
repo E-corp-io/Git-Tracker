@@ -5,29 +5,23 @@ import com.io.gittracker.utils.GHMapper;
 import java.io.IOException;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
-import org.kohsuke.github.GitHubBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GithubService {
-
-    private GitHub gitHub;
+    private GitHub gitHub = null;
     private final AppStateService appStateService;
-    private final TokenService tokenService;
 
     private final Logger logger = LoggerFactory.getLogger(GithubService.class);
 
-    public GithubService(GitHub gitHub, AppStateService appStateService, TokenService tokenService) {
-        this.gitHub = gitHub;
+    public GithubService(AppStateService appStateService, TokenService tokenService) {
         this.appStateService = appStateService;
-        this.tokenService = tokenService;
     }
 
-    public void setGitHub() throws IOException {
-        this.gitHub =
-                new GitHubBuilder().withOAuthToken(tokenService.getApiKey()).build();
+    public void SetGithub(GitHub github) {
+        this.gitHub = github;
     }
 
     /**
