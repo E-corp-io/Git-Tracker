@@ -11,15 +11,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GithubService {
-
-    private final GitHub gitHub;
+    private GitHub gitHub = null;
     private final AppStateService appStateService;
 
     private final Logger logger = LoggerFactory.getLogger(GithubService.class);
 
-    public GithubService(GitHub gitHub, AppStateService appStateService) {
-        this.gitHub = gitHub;
+    public GithubService(AppStateService appStateService) {
         this.appStateService = appStateService;
+    }
+
+    public void SetGithub(GitHub github) {
+        this.gitHub = github;
     }
 
     /**
