@@ -87,7 +87,7 @@ public class TokenInputPresenter implements Initializable {
         return task;
     }
 
-    void CreateAndRunTask(String token){
+    void CreateAndRunTask(String token) {
         var task = CreateTask(token);
         error_string.setText("");
         Thread th = new Thread(task);

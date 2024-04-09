@@ -86,8 +86,7 @@ public class RepoInputPresenter {
     private void handleConfirm(MouseEvent mouseEvent) throws IOException {
         String address = inputRepo.getText();
         Workspace workspace = inputWorkspace.getValue();
-        if(workspace == null)
-            return;
+        if (workspace == null) return;
         String group = inputGroup.getText();
         System.out.println(
                 "Addr: " + address + "; workspace: " + workspace.getName() + "; group: " + group + "; due on: ");

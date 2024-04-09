@@ -58,7 +58,7 @@ public class MainViewPresenter {
     private final ObservableList<String> workspaces = FXCollections.observableArrayList();
 
     public void initialize() {
-        if (appStateService.getAppState().getWorkspaces().isEmpty()){
+        if (appStateService.getAppState().getWorkspaces().isEmpty()) {
             createDefaultContent();
         }
 
@@ -82,7 +82,7 @@ public class MainViewPresenter {
         Workspace io = new Workspace("Inżynieria Oprogramowania");
         Workspace to = new Workspace("Technologie obiektowe");
         Workspace os = new Workspace("Open Source");
-        if (githubService.getGitHub() == null){
+        if (githubService.getGitHub() == null) {
             System.err.println("Github should not be null here!");
             return;
         }
