@@ -1,8 +1,11 @@
 package com.io.gittracker.model;
 
+import com.io.gittracker.services.GithubService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
 
 public class Group implements Refreshable {
     private final long id;
@@ -51,7 +54,8 @@ public class Group implements Refreshable {
     }
 
     @Override
-    public void refresh() {
-        repositories.forEach(Refreshable::refresh);
+    public void refresh(GithubService githubService, ExecutorService executorService) {
+        System.out.println("Refreshing group");
+        repositories.forEach(r -> r.refresh(githubService, executorService));
     }
 }

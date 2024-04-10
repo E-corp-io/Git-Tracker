@@ -1,9 +1,13 @@
 package com.io.gittracker.model;
 
+import com.io.gittracker.services.GithubService;
+import javafx.concurrent.Task;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 public final class Workspace implements Serializable, Refreshable {
@@ -82,8 +86,9 @@ public final class Workspace implements Serializable, Refreshable {
     }
 
     @Override
-    public void refresh() {
-        groups.forEach(Group::refresh);
+    public void refresh(GithubService githubService, ExecutorService executorService) {
+        System.out.println("Refreshing workspace");
+        groups.forEach(g -> {g.refresh(githubService, executorService);});
     }
 
     public Group newGroup(long id, String name) {

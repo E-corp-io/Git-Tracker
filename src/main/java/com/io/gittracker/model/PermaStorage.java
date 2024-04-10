@@ -3,6 +3,8 @@ package com.io.gittracker.model;
 import com.google.gson.*;
 import dev.dirs.ProjectDirectories;
 import java.io.*;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +12,8 @@ public class PermaStorage {
     private final String path;
 
     Logger logger = LoggerFactory.getLogger(PermaStorage.class);
-    Gson gson = new GsonBuilder().serializeNulls().create();
+
+    Gson gson;
 
     public PermaStorage() {
         ProjectDirectories myProjDirs = ProjectDirectories.from("com", "Ecorp", "GitTracker");
@@ -20,6 +23,10 @@ public class PermaStorage {
         }
         path = myProjDirs.configDir + "/appState.json";
         logger.info("Using config path: '{}'", path);
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Optional.class, new GsonOptionalDeserializer());
+        gson = gsonBuilder.serializeNulls().create();
     }
 
     public void saveState(AppState appState) {

@@ -25,6 +25,9 @@
             <HBox>
                 <Label styleClass="clickable" text="Settings" />
                 <Region HBox.hgrow="ALWAYS" />
+                <Label styleClass="clickable" fx:id="refreshLabel" text="Refresh" onMouseClicked="#refresh"/>
+                <ProgressIndicator visible="false" fx:id="refreshProgress" maxHeight="20"/>
+                <Region HBox.hgrow="ALWAYS" />
                 <Label styleClass="clickable" fx:id="newRepoLabel" text="Add new repo" onMouseClicked="#handleAddNewRepoClicked"/>
             </HBox>
 

@@ -1,16 +1,24 @@
 package com.io.gittracker.model;
 
+import com.google.gson.*;
 import com.io.gittracker.services.GithubService;
 import com.io.gittracker.utils.GHMapper;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+
+import javafx.concurrent.Task;
 import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.crypto.Data;
 
 public class GithubRepository implements Refreshable, Serializable {
     /** id used by GitHub api */
@@ -19,16 +27,13 @@ public class GithubRepository implements Refreshable, Serializable {
     private URL htmlUrl;
     private String name;
     private final Map<Long, PullRequest> pullRequestsMap = new HashMap<>();
-    private final List<String> labels = new ArrayList<>();
+    private Optional<PullRequest> latestPullRequest = Optional.empty();
+    private List<String> labels = new ArrayList<>();
     private Group workspaceGroup; // TODO: remove
     transient Logger logger = LoggerFactory.getLogger(GithubRepository.class);
 
-    private final transient GithubService githubService;
-
-    public GithubRepository(GithubService githubService, long id) {
+    public GithubRepository(long id) {
         this.id = id;
-        this.githubService = githubService;
-        refresh();
     }
 
     public List<PullRequest> getPullRequests() {
@@ -44,13 +49,15 @@ public class GithubRepository implements Refreshable, Serializable {
                 pullRequestsMap.put(prId, pr);
             }
         }
+        latestPullRequest = pullRequestsMap.values().stream().max(Comparator.comparing(PullRequest::getUpdatedAtDate));
+        System.out.println("Latest pull request: " + latestPullRequest.isEmpty());
     }
 
     public void setWorkspaceGroup(Group workspaceGroup) {
         this.workspaceGroup = workspaceGroup;
     }
 
-    List<PullRequest> fetchPullRequests() {
+    List<PullRequest> fetchPullRequests(GithubService githubService) {
         try {
             List<GHPullRequest> ghPullRequests =
                     githubService.getRepositoryById(id).getPullRequests(GHIssueState.ALL);
@@ -105,11 +112,45 @@ public class GithubRepository implements Refreshable, Serializable {
     }
 
     @Override
-    public void refresh() {
-        GHRepository repository = githubService.getRepositoryById(id);
-        this.htmlUrl = repository.getHtmlUrl();
-        this.name = repository.getName();
+    public void refresh(GithubService githubService, ExecutorService executorService) {
         // TODO FIX :)
-        //        mergePullRequests(fetchPullRequests());
+//        mergePullRequests(fetchPullRequests(githubService));
+        RefreshRepoTask task = new RefreshRepoTask(this, githubService);
+        task.setOnSucceeded(event -> {
+            Optional<GithubRepository> optional = task.valueProperty().get();
+            if(optional.isEmpty())
+                return;
+            GithubRepository new_values = optional.get();
+            this.htmlUrl = new_values.htmlUrl;
+            this.name = new_values.name;
+        });
+        executorService.execute(task);
+    }
+
+    static class RefreshRepoTask extends Task<Optional<GithubRepository>> {
+        GithubRepository parent;
+        GithubService githubService;
+
+        RefreshRepoTask(GithubRepository parent, GithubService githubService){
+            this.parent = parent;
+            this.githubService = githubService;
+        }
+
+        @Override
+        protected Optional<GithubRepository> call() {
+            System.out.println("Refreshing repo");
+            GithubRepository ret = new GithubRepository(parent.id);
+            ret.workspaceGroup = parent.workspaceGroup;
+            ret.labels = parent.labels;
+            ret.logger = parent.logger;
+
+            GHRepository repository = githubService.getRepositoryById(ret.id);
+            ret.htmlUrl = repository.getHtmlUrl();
+            ret.name = repository.getName();
+//            ret.mergePullRequests(ret.fetchPullRequests(githubService));
+            System.out.println("Refreshing repo finished");
+
+            return Optional.of(ret);
+        }
     }
 }

@@ -6,6 +6,9 @@ import com.io.gittracker.model.PullRequest;
 import com.io.gittracker.services.GithubService;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.slf4j.Logger;
@@ -24,7 +27,11 @@ public class GHMapper {
     }
 
     public static GithubRepository mapToRepo(GithubService githubService, GHRepository ghRepository) {
-        return new GithubRepository(githubService, ghRepository.getId());
+        var repo = new GithubRepository(ghRepository.getId());
+        // TODO: refresh repo on separate thread
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        repo.refresh(githubService, executorService);
+        return repo;
     }
 
     public static PullRequest mapToPullRequest(GithubService githubService, GHPullRequest pullRequest) {

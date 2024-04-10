@@ -3,7 +3,11 @@ package com.io.gittracker.services;
 import com.io.gittracker.model.AppState;
 import com.io.gittracker.model.PermaStorage;
 import com.io.gittracker.model.Workspace;
+
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+
+import javafx.concurrent.Task;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,7 +40,10 @@ public class AppStateService {
     /**
      * fetches all data for API and propagates the changes
      */
-    public void refresh() {
-        appState.getWorkspaces().forEach(Workspace::refresh);
+    public void refresh(GithubService githubService, ExecutorService executorService) {
+        System.out.println("Refreshing app state");
+        appState.getWorkspaces().forEach(w -> w.refresh(githubService, executorService));
     }
+
+
 }
