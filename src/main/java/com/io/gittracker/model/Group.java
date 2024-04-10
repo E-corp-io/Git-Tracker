@@ -1,7 +1,6 @@
 package com.io.gittracker.model;
 
 import com.io.gittracker.services.GithubService;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

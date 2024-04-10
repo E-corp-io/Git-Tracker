@@ -7,12 +7,9 @@ import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.services.GithubService;
 import com.io.gittracker.services.TokenService;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
 import javafx.application.HostServices;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -33,7 +30,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.kohsuke.github.GHRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,11 +37,13 @@ import org.springframework.stereotype.Component;
 public class MainViewPresenter {
     private final TokenService tokenService;
     private final UIMain uiMain;
+
     @Autowired
     private final AppStateService appStateService;
 
     @FXML
     public ProgressIndicator refreshProgress;
+
     private HostServices hostServices;
 
     @Autowired
@@ -67,9 +65,6 @@ public class MainViewPresenter {
 
     @FXML
     private Label newRepoLabel;
-
-
-
 
     private final ObservableList<String> workspaces = FXCollections.observableArrayList();
 
@@ -227,28 +222,27 @@ public class MainViewPresenter {
         ExecutorService refreshExecutor;
         GithubService githubService;
 
-        public RefreshTask(AppStateService appStateService, ExecutorService refreshExecutor, GithubService githubService) {
+        public RefreshTask(
+                AppStateService appStateService, ExecutorService refreshExecutor, GithubService githubService) {
             this.appStateService = appStateService;
             this.refreshExecutor = refreshExecutor;
             this.githubService = githubService;
         }
 
-
         @Override
         protected Void call() {
             appStateService.refresh(githubService, refreshExecutor);
-//            var ending_task = new BullshitTask();
+            //            var ending_task = new BullshitTask();
             refreshExecutor.shutdown();
             boolean is_terminated = false;
-            while(!is_terminated){
+            while (!is_terminated) {
                 try {
                     is_terminated = refreshExecutor.awaitTermination(100, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
+                    //                    throw new RuntimeException(e);
                 }
             }
             return null;
         }
     }
-
 }

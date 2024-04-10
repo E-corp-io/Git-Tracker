@@ -1,7 +1,6 @@
 package com.io.gittracker.model;
 
 import com.io.gittracker.services.GithubService;
-
 import java.util.concurrent.ExecutorService;
 
 /**

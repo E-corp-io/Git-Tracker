@@ -5,20 +5,15 @@ import com.io.gittracker.services.GithubService;
 import com.io.gittracker.utils.GHMapper;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-
 import javafx.concurrent.Task;
 import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.crypto.Data;
 
 public class GithubRepository implements Refreshable, Serializable {
     /** id used by GitHub api */
@@ -114,12 +109,11 @@ public class GithubRepository implements Refreshable, Serializable {
     @Override
     public void refresh(GithubService githubService, ExecutorService executorService) {
         // TODO FIX :)
-//        mergePullRequests(fetchPullRequests(githubService));
+        //        mergePullRequests(fetchPullRequests(githubService));
         RefreshRepoTask task = new RefreshRepoTask(this, githubService);
         task.setOnSucceeded(event -> {
             Optional<GithubRepository> optional = task.valueProperty().get();
-            if(optional.isEmpty())
-                return;
+            if (optional.isEmpty()) return;
             GithubRepository new_values = optional.get();
             this.htmlUrl = new_values.htmlUrl;
             this.name = new_values.name;
@@ -131,7 +125,7 @@ public class GithubRepository implements Refreshable, Serializable {
         GithubRepository parent;
         GithubService githubService;
 
-        RefreshRepoTask(GithubRepository parent, GithubService githubService){
+        RefreshRepoTask(GithubRepository parent, GithubService githubService) {
             this.parent = parent;
             this.githubService = githubService;
         }
@@ -147,7 +141,7 @@ public class GithubRepository implements Refreshable, Serializable {
             GHRepository repository = githubService.getRepositoryById(ret.id);
             ret.htmlUrl = repository.getHtmlUrl();
             ret.name = repository.getName();
-//            ret.mergePullRequests(ret.fetchPullRequests(githubService));
+            //            ret.mergePullRequests(ret.fetchPullRequests(githubService));
             System.out.println("Refreshing repo finished");
 
             return Optional.of(ret);
