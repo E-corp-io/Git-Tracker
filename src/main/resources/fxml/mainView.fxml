@@ -11,19 +11,22 @@
     <left>
         <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
             <Label text="Classes:"/>
-            <ListView fx:id="classes"/>
+            <ListView styleClass="mainViewList" fx:id="classes"/>
 
             <Label styleClass="marginTop" text="Groups"/>
-            <ListView fx:id="groups"/>
+            <ListView styleClass="mainViewList" fx:id="groups"/>
 
             <Label styleClass="marginTop" text="Other"/>
-            <ListView fx:id="other"/>
+            <ListView styleClass="mainViewList" fx:id="other"/>
         </VBox>
     </left>
     <top>
         <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
             <HBox>
                 <Label styleClass="clickable" text="Settings" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label styleClass="clickable" fx:id="refreshLabel" text="Refresh" onMouseClicked="#refresh"/>
+                <ProgressIndicator visible="false" fx:id="refreshProgress" maxHeight="20"/>
                 <Region HBox.hgrow="ALWAYS" />
                 <Label styleClass="clickable" fx:id="newRepoLabel" text="Add new repo" onMouseClicked="#handleAddNewRepoClicked"/>
             </HBox>

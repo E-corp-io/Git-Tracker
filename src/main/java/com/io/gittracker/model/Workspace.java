@@ -1,9 +1,11 @@
 package com.io.gittracker.model;
 
+import com.io.gittracker.services.GithubService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 public final class Workspace implements Serializable, Refreshable {
@@ -45,12 +47,13 @@ public final class Workspace implements Serializable, Refreshable {
     }
 
     public Group createNewGroup(long id, String name) {
-        Group group = new Group(id, name, this);
+        Group group = new Group(id, name);
         groups.add(group);
         return group;
     }
 
     public void addRepositoryToDefaultGroup(GithubRepository repository) {
+        if (repository == null) return;
         groups.get(0).addRepository(repository);
     }
 
@@ -81,68 +84,18 @@ public final class Workspace implements Serializable, Refreshable {
     }
 
     @Override
-    public void refresh() {
-        groups.forEach(Group::refresh);
+    public void refresh(GithubService githubService, ExecutorService executorService) {
+        System.out.println("Refreshing workspace");
+        groups.forEach(g -> {
+            g.refresh(githubService, executorService);
+        });
     }
 
     public Group newGroup(long id, String name) {
-        return new Group(id, name, this);
+        return new Group(id, name);
     }
 
     public Group getDefaultGroup() {
-        return new Group(0, "DEFAULT", this);
-    }
-
-    public class Group implements Refreshable, Serializable {
-        private final long id;
-        private String name;
-        private final List<GithubRepository> repositories;
-
-        Workspace workspace;
-
-        public Group(long id, String name, Workspace workspace) {
-            this.id = id;
-            this.name = name;
-            this.workspace = workspace;
-            repositories = new ArrayList<>();
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public List<GithubRepository> getRepositories() {
-            return repositories;
-        }
-
-        public void addRepository(GithubRepository githubRepository) {
-            repositories.add(githubRepository);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Group that = (Group) o;
-            return id == that.id;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(id);
-        }
-
-        @Override
-        public void refresh() {
-            repositories.forEach(Refreshable::refresh);
-        }
+        return new Group(0, "DEFAULT");
     }
 }

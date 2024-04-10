@@ -2,11 +2,7 @@ package com.io.gittracker.model;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public final class AppState implements Serializable {
     @Serial
@@ -15,6 +11,7 @@ public final class AppState implements Serializable {
     private final List<Workspace> workspaces;
     private int currentWorkspaceIndex;
     private int currentGroupIndex;
+    public String githubToken = "EMPTY";
 
     private final Date lastUpdate;
 
@@ -23,6 +20,17 @@ public final class AppState implements Serializable {
      */
     public AppState() {
         this(new ArrayList<>(), 0, 0, new Date());
+    }
+
+    public static AppState createDefault() {
+        AppState appState = new AppState();
+        // Add sample items to the lists
+        //        Workspace io = new Workspace("Inżynieria Oprogramowania");
+        //        Workspace to = new Workspace("Technologie obiektowe");
+        //        appState.addWorkspace(io);
+        //        appState.addWorkspace(to);
+        //
+        return appState;
     }
 
     public AppState(List<Workspace> workspaces, int currentWorkspaceIndex, int currentGroupIndex, Date lastUpdate) {
@@ -65,17 +73,24 @@ public final class AppState implements Serializable {
         workspaces.add(workspace);
     }
 
-    public boolean checkIfWorkspaceExists(String name) {
+    public Workspace getOrCreate(String name) {
         for (Workspace workspace : workspaces) {
             if (workspace.getName().equals(name)) {
-                return true;
+                return workspace;
             }
         }
-        return false;
+        var workspace = new Workspace(name);
+        addWorkspace(workspace);
+        return workspace;
     }
 
-    public void addNewRepo(String name, String url, String workspace, String group, LocalDate dueDate) {
-        // check if workspace and group exist, if not - create them, create new repository, add where needed
+    public Workspace getWorkspaceByName(String name) {
+        for (Workspace workspace : workspaces) {
+            if (workspace.getName().equals(name)) {
+                return workspace;
+            }
+        }
+        return null;
     }
 
     public int getCurrentWorkspaceIndex() {
