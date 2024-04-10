@@ -179,7 +179,15 @@ public class MainViewPresenter {
             System.out.println(repo.getHtmlUrl().toString());
             this.hostServices.showDocument(repo.getHtmlUrl().toString());
         });
-        Label lastCommit = new Label("last commit msg should go here");
+        Label lastCommit = new Label();
+        var latest_pr_optional = repo.getLatestPullRequest();
+        latest_pr_optional.ifPresentOrElse(
+                pullRequest -> {
+                    lastCommit.setText(String.format(pullRequest.getUpdatedAtDate() + " | " + pullRequest.getTitle()));
+                },
+                () -> {
+                    lastCommit.setText("Last PR unknown");
+                });
         upperRow.getChildren().add(repoName);
         lowerRow.getChildren().add(lastCommit);
         tile.getChildren().add(upperRow);
@@ -211,6 +219,7 @@ public class MainViewPresenter {
         var task = new RefreshTask(appStateService, refreshExecutor, githubService);
         task.setOnSucceeded(event -> {
             refreshProgress.setVisible(false);
+            this.createTilesFromList();
         });
         Thread th = new Thread(task);
         th.setDaemon(true);

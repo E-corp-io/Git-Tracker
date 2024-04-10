@@ -9,8 +9,11 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import javafx.concurrent.Task;
+import org.kohsuke.github.*;
+import org.kohsuke.github.GHDirection;
 import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHPullRequest;
+import org.kohsuke.github.GHPullRequestQueryBuilder;
 import org.kohsuke.github.GHRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +24,7 @@ public class GithubRepository implements Refreshable, Serializable {
 
     private URL htmlUrl;
     private String name;
-    private final Map<Long, PullRequest> pullRequestsMap = new HashMap<>();
+    private Map<Long, PullRequest> pullRequestsMap = new HashMap<>();
     private Optional<PullRequest> latestPullRequest = Optional.empty();
     private List<String> labels = new ArrayList<>();
     private Group workspaceGroup; // TODO: remove
@@ -29,6 +32,11 @@ public class GithubRepository implements Refreshable, Serializable {
 
     public GithubRepository(long id) {
         this.id = id;
+    }
+
+    public Optional<PullRequest> getLatestPullRequest() {
+        if (latestPullRequest == null) return Optional.empty();
+        return latestPullRequest;
     }
 
     public List<PullRequest> getPullRequests() {
@@ -45,7 +53,6 @@ public class GithubRepository implements Refreshable, Serializable {
             }
         }
         latestPullRequest = pullRequestsMap.values().stream().max(Comparator.comparing(PullRequest::getUpdatedAtDate));
-        System.out.println("Latest pull request: " + latestPullRequest.isEmpty());
     }
 
     public void setWorkspaceGroup(Group workspaceGroup) {
@@ -55,7 +62,15 @@ public class GithubRepository implements Refreshable, Serializable {
     List<PullRequest> fetchPullRequests(GithubService githubService) {
         try {
             List<GHPullRequest> ghPullRequests =
-                    githubService.getRepositoryById(id).getPullRequests(GHIssueState.ALL);
+                    //                    githubService.getRepositoryById(id).getPullRequests(GHIssueState.ALL);
+                    githubService
+                            .getRepositoryById(id)
+                            .queryPullRequests()
+                            .state(GHIssueState.ALL)
+                            .sort(GHPullRequestQueryBuilder.Sort.UPDATED)
+                            .direction(GHDirection.DESC)
+                            .list()
+                            .toList();
             return ghPullRequests.stream()
                     .map(pr -> GHMapper.mapToPullRequest(githubService, pr))
                     .toList();
@@ -117,6 +132,8 @@ public class GithubRepository implements Refreshable, Serializable {
             GithubRepository new_values = optional.get();
             this.htmlUrl = new_values.htmlUrl;
             this.name = new_values.name;
+            this.pullRequestsMap = new_values.pullRequestsMap;
+            this.latestPullRequest = new_values.latestPullRequest;
         });
         executorService.execute(task);
     }
@@ -141,7 +158,8 @@ public class GithubRepository implements Refreshable, Serializable {
             GHRepository repository = githubService.getRepositoryById(ret.id);
             ret.htmlUrl = repository.getHtmlUrl();
             ret.name = repository.getName();
-            //            ret.mergePullRequests(ret.fetchPullRequests(githubService));
+            var pullRequests = ret.fetchPullRequests(githubService);
+            ret.mergePullRequests(pullRequests);
             System.out.println("Refreshing repo finished");
 
             return Optional.of(ret);
