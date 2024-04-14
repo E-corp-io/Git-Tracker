@@ -18,8 +18,13 @@ public class PullRequest implements Serializable {
     private URL htmlURL;
     private final Date createdAtDate;
     private Date updatedAtDate;
+    private String Title;
 
     private transient GithubService githubService;
+
+    public String getTitle() {
+        return Title;
+    }
 
     public PullRequest(
             long id,
@@ -27,12 +32,16 @@ public class PullRequest implements Serializable {
             PRStats prStats,
             URL htmlURL,
             Date createdAtDate,
+            Date updatedAtDate,
+            String Title,
             GithubService githubService) {
         this.id = id;
         this.commentList = commentList;
         this.prStats = prStats;
         this.htmlURL = htmlURL;
         this.createdAtDate = createdAtDate;
+        this.updatedAtDate = updatedAtDate;
+        this.Title = Title;
         this.githubService = githubService;
     }
 

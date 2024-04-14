@@ -13,7 +13,10 @@ public class GsonOptionalDeserializer<T> implements JsonSerializer<Optional<T>>,
         final JsonArray asJsonArray = json.getAsJsonArray();
         final JsonElement jsonElement = asJsonArray.get(0);
         final T value = context.deserialize(jsonElement, ((ParameterizedType) typeOfT).getActualTypeArguments()[0]);
-        return Optional.ofNullable(value);
+        if (value == null) {
+            return Optional.empty();
+        }
+        return Optional.of(value);
     }
 
     @Override

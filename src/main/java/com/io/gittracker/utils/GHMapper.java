@@ -37,13 +37,14 @@ public class GHMapper {
         try {
             PullRequest.PRStats prStats = new PullRequest.PRStats(
                     pullRequest.getChangedFiles(), pullRequest.getAdditions(), pullRequest.getDeletions());
-
             PullRequest pr = new PullRequest(
                     pullRequest.getId(),
                     null,
                     prStats,
                     pullRequest.getHtmlUrl(),
                     pullRequest.getCreatedAt(),
+                    pullRequest.getUpdatedAt(),
+                    pullRequest.getTitle(),
                     githubService);
 
             pr.setCommentList(getComments(pullRequest));
