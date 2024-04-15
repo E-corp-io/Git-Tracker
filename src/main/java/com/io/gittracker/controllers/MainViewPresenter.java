@@ -21,13 +21,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,8 +187,19 @@ public class MainViewPresenter {
                 () -> {
                     lastCommit.setText("Last PR unknown");
                 });
+        Button deleteButton = new Button();
+        deleteButton.setText("X");
+        deleteButton.setStyle("-fx-background-color: #c20000; -fx-pref-width: 20; -fx-pref-height: 20");
+        deleteButton.setOnAction(event -> {
+            this.repoBox.getChildren().remove(tile);
+            currentWorkspace.removeRepo(repo);
+        });
+        Region region = new Region();
+        HBox.setHgrow(region, Priority.valueOf("ALWAYS"));
         upperRow.getChildren().add(repoName);
         lowerRow.getChildren().add(lastCommit);
+        lowerRow.getChildren().add(region);
+        lowerRow.getChildren().add(deleteButton);
         tile.getChildren().add(upperRow);
         tile.getChildren().add(lowerRow);
         return tile;
