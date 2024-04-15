@@ -98,4 +98,10 @@ public final class Workspace implements Serializable, Refreshable {
     public Group getDefaultGroup() {
         return new Group(0, "DEFAULT");
     }
+
+    public void removeRepo(GithubRepository repo) {
+        this.groups.forEach(group -> {
+            group.getRepositories().remove(repo);
+        });
+    }
 }
