@@ -92,8 +92,12 @@ public class RepositoryPresenter {
                             prVbox.getChildren()
                                     .addAll(pr.getComments().stream()
                                             .map(prComment -> {
-                                                Label label = new Label(
-                                                        prComment.username() + " commented: " + prComment.body());
+                                                Label label = new Label(prComment.username() + " commented: "
+                                                        + (prComment.body().length() > 200
+                                                                ? prComment
+                                                                                .body()
+                                                                                .substring(0, 197) + "[...]"
+                                                                : prComment.body()));
                                                 label.setWrapText(true);
                                                 return label;
                                             })
