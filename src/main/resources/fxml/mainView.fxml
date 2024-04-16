@@ -31,15 +31,9 @@
         </VBox>
     </top>
     <center>
-        <StackPane>
-            <children>
-                <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: #aaaaaa;" vbarPolicy="ALWAYS">
-                    <content>
-                        <VBox fx:id="groupVBox" alignment="TOP_CENTER">
-                        </VBox>
-                    </content>
-                </ScrollPane>
-            </children>
-        </StackPane>
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
+            <VBox fx:id="groupVBox" alignment="TOP_CENTER">
+            </VBox>
+        </ScrollPane>
     </center>
 </BorderPane>
