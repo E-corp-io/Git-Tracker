@@ -177,7 +177,7 @@ public class MainViewPresenter {
     private Accordion createGroupView(Group group) {
         TitledPane[] panes =
                 group.getRepositories().stream().map(this::createRepositoryPane).toArray(TitledPane[]::new);
-//        VBox vBox = new VBox(panes);
+        //        VBox vBox = new VBox(panes);
         Accordion accordion = new Accordion(panes);
         accordion.getStyleClass().add("group-view-vbox");
         accordion.prefHeight(0);

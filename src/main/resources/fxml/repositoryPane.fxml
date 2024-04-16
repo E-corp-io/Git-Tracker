@@ -25,7 +25,7 @@
                 <Insets top="5.0"/>
             </padding>
             <Label fx:id="repositoryNameLabel" text="Repository name Repository name Repository name " wrapText="true"
-                   GridPane.columnIndex="1"/>
+                   GridPane.columnIndex="1" styleClass="important"/>
             <Label fx:id="lastPrDateLabel" text="..........." GridPane.columnIndex="1" GridPane.rowIndex="1"/>
             <Label fx:id="newPrCountLabel" text="-" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
             <Label fx:id="groupLabel" text="......." GridPane.columnIndex="2"/>

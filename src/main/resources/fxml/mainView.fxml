@@ -19,15 +19,16 @@
     <top>
         <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
             <HBox>
-                <Label styleClass="clickable" text="Settings" />
+                <Label styleClass="clickable,important" text="Settings" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Label fx:id="refreshLabel" onMouseClicked="#refresh" styleClass="clickable" text="Refresh" />
-                <ProgressIndicator fx:id="refreshProgress" maxHeight="20" visible="false" />
-                <Region HBox.hgrow="ALWAYS" />
-                <Label fx:id="newRepoLabel" onMouseClicked="#handleAddNewRepoClicked" styleClass="clickable" text="Add new repo" />
+                <Label fx:id="newRepoLabel" onMouseClicked="#handleAddNewRepoClicked" styleClass="clickable,important" text="Add new repo" />
             </HBox>
-
-            <Label text="Sorting options" />
+            <HBox>
+                <Label text="Sorting options" />
+                <Region HBox.hgrow="ALWAYS" />
+                <ProgressIndicator fx:id="refreshProgress" maxHeight="20" visible="false" />
+                <Label fx:id="refreshLabel" onMouseClicked="#refresh" styleClass="clickable,important" text="Refresh" />
+            </HBox>
         </VBox>
     </top>
     <center>
