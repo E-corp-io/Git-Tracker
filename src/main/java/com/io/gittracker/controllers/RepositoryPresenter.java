@@ -78,13 +78,27 @@ public class RepositoryPresenter {
                 .getChildren()
                 .addAll(newPullRequests.stream()
                         .map(pr -> {
-                            Label prLabel = new Label(pr.getTitle());
+                            VBox prVbox = new VBox();
+                            Label prLabel = new Label(pr.getTitle() + " | " + pr.getUpdatedAtDate());
                             prLabel.getStyleClass().add("clickable");
+                            prLabel.getStyleClass().add("pr-title");
+                            prVbox.getStyleClass().add("pr-border");
+
                             prLabel.setOnMouseClicked(event -> {
                                 this.hostServices.showDocument(pr.getHtmlURL().toString());
                                 event.consume();
                             });
-                            return prLabel;
+                            prVbox.getChildren().add(prLabel);
+                            prVbox.getChildren()
+                                    .addAll(pr.getComments().stream()
+                                            .map(prComment -> {
+                                                Label label = new Label(
+                                                        prComment.username() + " commented: " + prComment.body());
+                                                label.setWrapText(true);
+                                                return label;
+                                            })
+                                            .toList());
+                            return prVbox;
                         })
                         .toList());
         newPrCountLabel.setText(String.valueOf(prNames.size()));
