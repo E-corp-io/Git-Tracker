@@ -74,7 +74,19 @@ public class RepositoryPresenter {
         List<String> prNames =
                 newPullRequests.stream().map(PullRequest::getTitle).toList();
         pullRequestsVBox.getChildren().clear();
-        pullRequestsVBox.getChildren().addAll(prNames.stream().map(Label::new).toList());
+        pullRequestsVBox
+                .getChildren()
+                .addAll(newPullRequests.stream()
+                        .map(pr -> {
+                            Label prLabel = new Label(pr.getTitle());
+                            prLabel.getStyleClass().add("clickable");
+                            prLabel.setOnMouseClicked(event -> {
+                                this.hostServices.showDocument(pr.getHtmlURL().toString());
+                                event.consume();
+                            });
+                            return prLabel;
+                        })
+                        .toList());
         newPrCountLabel.setText(String.valueOf(prNames.size()));
         String latestDate = String.valueOf(newPullRequests.stream()
                 .max(Comparator.comparing(PullRequest::getUpdatedAtDate))
