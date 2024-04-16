@@ -1,14 +1,16 @@
 package com.io.gittracker.model;
 
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
 
 public final class AppState implements Serializable {
     @Serial
     private static final long serialVersionUID = 0L;
 
-    private final List<Workspace> workspaces;
+    private transient ListProperty<Workspace> workspacesProperty;
     private int currentWorkspaceIndex;
     private int currentGroupIndex;
     public String githubToken = "EMPTY";
@@ -19,22 +21,15 @@ public final class AppState implements Serializable {
      * creates a default empty appState
      */
     public AppState() {
-        this(new ArrayList<>(), 0, 0, new Date());
+        this(FXCollections.observableArrayList(), 0, 0, new Date());
     }
 
     public static AppState createDefault() {
-        AppState appState = new AppState();
-        // Add sample items to the lists
-        //        Workspace io = new Workspace("Inżynieria Oprogramowania");
-        //        Workspace to = new Workspace("Technologie obiektowe");
-        //        appState.addWorkspace(io);
-        //        appState.addWorkspace(to);
-        //
-        return appState;
+        return new AppState();
     }
 
     public AppState(List<Workspace> workspaces, int currentWorkspaceIndex, int currentGroupIndex, Date lastUpdate) {
-        this.workspaces = workspaces;
+        this.workspacesProperty = new SimpleListProperty<>(FXCollections.observableList(workspaces));
         this.currentWorkspaceIndex = currentWorkspaceIndex;
         this.currentGroupIndex = currentGroupIndex;
         this.lastUpdate = lastUpdate;
@@ -45,7 +40,7 @@ public final class AppState implements Serializable {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (AppState) obj;
-        return Objects.equals(this.workspaces, that.workspaces)
+        return Objects.equals(this.workspacesProperty, that.workspacesProperty)
                 && this.currentWorkspaceIndex == that.currentWorkspaceIndex
                 && this.currentGroupIndex == that.currentGroupIndex
                 && Objects.equals(this.lastUpdate, that.lastUpdate);
@@ -53,28 +48,40 @@ public final class AppState implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(workspaces, currentWorkspaceIndex, currentGroupIndex, lastUpdate);
+        return Objects.hash(workspacesProperty.getValue(), currentWorkspaceIndex, currentGroupIndex, lastUpdate);
     }
 
     @Override
     public String toString() {
         return "AppState[" + "workspaces="
-                + workspaces + ", " + "currentWorkspaceIndex="
+                + workspacesProperty.getValue() + ", " + "currentWorkspaceIndex="
                 + currentWorkspaceIndex + ", " + "currentGroupIndex="
                 + currentGroupIndex + ", " + "currentSubgroupIndex="
                 + lastUpdate + ']';
     }
 
-    public List<Workspace> getWorkspaces() {
-        return workspaces;
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(new ArrayList<>(workspacesProperty));
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        workspacesProperty = new SimpleListProperty<>(FXCollections.observableList((List<Workspace>) in.readObject()));
+    }
+
+    public ListProperty<Workspace> getWorkspacesProperty() {
+        return workspacesProperty;
     }
 
     public void addWorkspace(Workspace workspace) {
-        workspaces.add(workspace);
+        workspacesProperty.add(workspace);
     }
 
     public Workspace getOrCreate(String name) {
-        for (Workspace workspace : workspaces) {
+        for (Workspace workspace : workspacesProperty) {
             if (workspace.getName().equals(name)) {
                 return workspace;
             }
@@ -85,7 +92,7 @@ public final class AppState implements Serializable {
     }
 
     public Workspace getWorkspaceByName(String name) {
-        for (Workspace workspace : workspaces) {
+        for (Workspace workspace : workspacesProperty) {
             if (workspace.getName().equals(name)) {
                 return workspace;
             }

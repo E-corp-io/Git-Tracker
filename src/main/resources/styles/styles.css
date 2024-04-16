@@ -19,6 +19,7 @@
 .mainViewList{
     -fx-pref-height: 500px;
     -fx-min-width: 20%;
+    -fx-background-color: #686c74;
 }
 
 .vbox{
@@ -31,8 +32,6 @@
 }
 
 .vboxCenter {
-    -fx-pref-width: 500px;
-    -fx-pref-height: 500px;
     -fx-background-color: #383c44;
 }
 
@@ -53,7 +52,7 @@
     -fx-pref-height: 400px;
 }
 
-VBox {
+.token-vbox {
     -fx-spacing: 10;
     -fx-padding: 20;
     -fx-alignment: center;
@@ -86,12 +85,22 @@ Button:pressed {
     -fx-background-color: #004080;
 }
 
-.repoTile {
-    -fx-background-color: #686c74;
-    -fx-pref-width: 700;
-}
-
 .clickable {
     -fx-underline: true;
     -fx-cursor: hand;
+}
+
+
+.scroll-pane .viewport {
+    /*-fx-background-color: #686c74;*/
+    -fx-background-color: white;
+}
+
+.titled-pane .title {
+    -fx-background-color: #383c44;
+}
+
+.group-view-vbox {
+    -fx-padding: 0 0 0 10;
+    -fx-spacing: 5px;
 }

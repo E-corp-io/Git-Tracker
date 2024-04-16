@@ -9,7 +9,7 @@
             stylesheets="@../styles/styles.css"
             fx:controller="com.io.gittracker.controllers.TokenInputPresenter">
     <center>
-        <VBox styleClass="vbox, margin">
+        <VBox styleClass="token-vbox, margin">
             <Label text="Type your github token" />
             <TextField fx:id="ghToken" />
             <Button fx:id="submitButton" onAction="#submitApiKey" text="Submit" />

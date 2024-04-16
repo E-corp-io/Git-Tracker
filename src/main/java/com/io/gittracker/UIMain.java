@@ -49,6 +49,7 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
             view = fxmlLoader.load();
         } catch (IOException e) {
             System.out.printf("fxml loader failed loading '%s'\n", fxml);
+            e.printStackTrace();
         }
         rootPane.setCenter(view);
     }

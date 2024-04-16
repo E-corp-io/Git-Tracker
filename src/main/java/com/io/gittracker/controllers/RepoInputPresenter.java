@@ -1,5 +1,7 @@
 package com.io.gittracker.controllers;
 
+import com.io.gittracker.model.GithubRepository;
+import com.io.gittracker.model.Group;
 import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.services.GithubService;
@@ -20,16 +22,13 @@ import org.springframework.stereotype.Component;
 public class RepoInputPresenter {
 
     @FXML
-    public DatePicker dateInput;
-
-    @FXML
     public Label add_new_repo_msg;
 
     @FXML
-    private ComboBox<Workspace> inputWorkspace;
+    private ComboBox<Workspace> workspaceComboBox;
 
     @FXML
-    private TextField inputGroup;
+    private ComboBox<Group> groupComboBox;
 
     @FXML
     private Button confirmButton;
@@ -60,12 +59,18 @@ public class RepoInputPresenter {
     @FXML
     void initialize() {
         confirmButton.setDisable(true);
-        inputWorkspace.onActionProperty().set(event -> {
+        configureWorkspaceComboBox();
+        configureGroupComboBox();
+    }
+
+    private void configureWorkspaceComboBox() {
+
+        workspaceComboBox.onActionProperty().set(event -> {
             confirmButton.setDisable(ShouldConfirmBeDisabled());
         });
 
-        inputWorkspace.getItems().addAll(appStateService.getWorkspaces());
-        inputWorkspace.setCellFactory(new Callback<ListView<Workspace>, ListCell<Workspace>>() {
+        workspaceComboBox.itemsProperty().bind(appStateService.getWorkspacesProperty());
+        workspaceComboBox.setCellFactory(new Callback<ListView<Workspace>, ListCell<Workspace>>() {
             @Override
             public ListCell<Workspace> call(ListView<Workspace> param) {
                 return new ListCell<Workspace>() {
@@ -81,7 +86,7 @@ public class RepoInputPresenter {
                 };
             }
         });
-        inputWorkspace.setConverter(new StringConverter<Workspace>() {
+        workspaceComboBox.setConverter(new StringConverter<Workspace>() {
             @Override
             public String toString(Workspace object) {
                 return object != null ? object.getName() : "";
@@ -92,20 +97,74 @@ public class RepoInputPresenter {
                 if (string == null || string.trim().isEmpty()) {
                     return null;
                 } else {
+                    for (Workspace workspace : appStateService.getWorkspacesProperty()) {
+                        if (workspace.getName().equals(string)) {
+                            return workspace;
+                        }
+                    }
                     return new Workspace(string);
                 }
             }
         });
+        workspaceComboBox.getSelectionModel().selectFirst();
+    }
+
+    private void configureGroupComboBox() {
+
+        workspaceComboBox.valueProperty().addListener((observableValue, oldWorkspace, newWorkspace) -> {
+            if (newWorkspace != null) {
+                groupComboBox.getItems().clear();
+                groupComboBox.getItems().addAll(newWorkspace.getGroups());
+            }
+            groupComboBox.getSelectionModel().selectFirst();
+        });
+        groupComboBox.setCellFactory(new Callback<ListView<Group>, ListCell<Group>>() {
+            @Override
+            public ListCell<Group> call(ListView<Group> param) {
+                return new ListCell<Group>() {
+                    @Override
+                    protected void updateItem(Group group, boolean empty) {
+                        super.updateItem(group, empty);
+                        if (group != null) {
+                            setText(group.getName());
+                        } else {
+                            setText(null);
+                        }
+                    }
+                };
+            }
+        });
+        groupComboBox.setConverter(new StringConverter<Group>() {
+            @Override
+            public String toString(Group group) {
+                return group != null ? group.getName() : "";
+            }
+
+            @Override
+            public Group fromString(String string) {
+                if (string == null || string.trim().isEmpty()) {
+                    return null;
+                } else {
+                    for (Group group : workspaceComboBox.getValue().getGroups()) {
+                        if (group.getName().equals(string)) return group;
+                    }
+                    return new Group(string);
+                }
+            }
+        });
+        groupComboBox.getItems().setAll(workspaceComboBox.getValue().getGroups());
+        groupComboBox.getSelectionModel().selectFirst();
     }
 
     @FXML
     private void handleConfirm(MouseEvent mouseEvent) throws IOException {
         String address = inputRepo.getText();
-        Workspace workspace = inputWorkspace.getValue();
+        Workspace workspace = workspaceComboBox.getValue();
         if (workspace == null) return; // Should not happen
-        String group = inputGroup.getText();
-        System.out.println(
-                "Addr: " + address + "; workspace: " + workspace.getName() + "; group: " + group + "; due on: ");
+        Group group = groupComboBox.getValue();
+
+        System.out.printf("Adding %s to group %s and workspace %s%n", address, group.getName(), workspace.getName());
+
         // todo move this elsewhere
 
         if (repo_owner.isEmpty() || repo_name.isEmpty()) {
@@ -114,24 +173,21 @@ public class RepoInputPresenter {
         }
 
         var owner_slash_repo_name = String.format("%s/%s", repo_owner.get(), repo_name.get());
-        workspace.addRepositoryToDefaultGroup(githubService.getRepository(owner_slash_repo_name));
+        GithubRepository repository = githubService.getRepository(owner_slash_repo_name);
+
+        if (repository == null) return;
+
+        if (!appStateService.getWorkspacesProperty().contains(workspace)) {
+            appStateService.getWorkspacesProperty().add(workspace);
+        }
+        if (!workspace.getGroups().contains(group)) {
+            group.setWorkspace(workspace);
+            workspace.getGroupsProperty().add(group);
+        }
+
+        group.addRepository(repository);
 
         // TODO: make adding async - the repo url may be bad!
-
-        boolean added = false;
-        for (Workspace workspace1 : appStateService.getWorkspaces()) {
-            if (workspace1.getName().equals(workspace.getName())) {
-                added = true;
-                workspace.getAllRepositories().forEach(workspace1::addRepositoryToDefaultGroup);
-            }
-        }
-        if (!added) {
-            appStateService.getAppState().addWorkspace(workspace);
-        }
-        for (Workspace w : this.appStateService.getWorkspaces()) {
-            System.out.println(w.getName());
-        }
-        this.mainViewPresenter.setList();
         ((Stage) this.cancelButton.getScene().getWindow()).close();
     }
 
@@ -141,7 +197,7 @@ public class RepoInputPresenter {
     }
 
     private boolean ShouldConfirmBeDisabled() {
-        Workspace workspace = inputWorkspace.getValue();
+        Workspace workspace = workspaceComboBox.getValue();
         boolean bad_workspace = workspace == null;
         boolean bad_platform = platform.isEmpty();
         boolean bad_repo_owner = repo_owner.isEmpty();

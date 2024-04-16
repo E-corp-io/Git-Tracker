@@ -3,21 +3,17 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane styleClass="root"
-            xmlns="http://javafx.com/javafx/17.0.2-ea"
-            xmlns:fx="http://javafx.com/fxml/1"
-            stylesheets="@../styles/styles.css"
-            fx:controller="com.io.gittracker.controllers.MainViewPresenter">
+<BorderPane maxHeight="1500.0" prefWidth="600.0" styleClass="root" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.io.gittracker.controllers.MainViewPresenter">
     <left>
         <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
-            <Label text="Classes:"/>
-            <ListView styleClass="mainViewList" fx:id="classes"/>
+            <Label text="Classes:" />
+            <ListView fx:id="workspaceListView" styleClass="mainViewList" />
 
-            <Label styleClass="marginTop" text="Groups"/>
-            <ListView styleClass="mainViewList" fx:id="groups"/>
+            <Label styleClass="marginTop" text="Groups" />
+            <ListView fx:id="groupsListView" styleClass="mainViewList" />
 
-            <Label styleClass="marginTop" text="Other"/>
-            <ListView styleClass="mainViewList" fx:id="other"/>
+            <Label styleClass="marginTop" text="Other" />
+            <ListView fx:id="otherListView" styleClass="mainViewList" />
         </VBox>
     </left>
     <top>
@@ -25,17 +21,25 @@
             <HBox>
                 <Label styleClass="clickable" text="Settings" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Label styleClass="clickable" fx:id="refreshLabel" text="Refresh" onMouseClicked="#refresh"/>
-                <ProgressIndicator visible="false" fx:id="refreshProgress" maxHeight="20"/>
+                <Label fx:id="refreshLabel" onMouseClicked="#refresh" styleClass="clickable" text="Refresh" />
+                <ProgressIndicator fx:id="refreshProgress" maxHeight="20" visible="false" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Label styleClass="clickable" fx:id="newRepoLabel" text="Add new repo" onMouseClicked="#handleAddNewRepoClicked"/>
+                <Label fx:id="newRepoLabel" onMouseClicked="#handleAddNewRepoClicked" styleClass="clickable" text="Add new repo" />
             </HBox>
 
-            <Label text="Sorting options"/>
+            <Label text="Sorting options" />
         </VBox>
     </top>
     <center>
-        <TilePane fx:id="repoBox" styleClass="vboxCenter, margin" BorderPane.alignment="CENTER">
-        </TilePane>
+        <StackPane>
+            <children>
+                <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: #aaaaaa;" vbarPolicy="ALWAYS">
+                    <content>
+                        <VBox fx:id="groupVBox" alignment="TOP_CENTER">
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </children>
+        </StackPane>
     </center>
 </BorderPane>
