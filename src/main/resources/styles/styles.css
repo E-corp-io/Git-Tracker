@@ -109,7 +109,6 @@ Button:pressed {
 }
 
 .titled-pane {
-    -fx-border-color: #383c44;
     -fx-background-color: #383c44;
 }
 
@@ -144,4 +143,9 @@ Button:pressed {
 .important {
     -fx-font-size: 16;
     -fx-font-weight: bold;
+}
+
+.accordion > .titled-pane {
+    -fx-border-width: 3px;
+    -fx-border-color: #686c74;
 }
