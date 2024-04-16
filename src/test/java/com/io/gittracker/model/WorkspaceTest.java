@@ -35,8 +35,8 @@ class WorkspaceTest {
         when(githubRepository2.getId()).thenReturn(2L);
 
         Workspace workspace = new Workspace("TEST WORKSPACE");
-        workspace.addRepositoryToDefaultGroup(githubRepository1);
-        workspace.addRepositoryToDefaultGroup(githubRepository2);
+        workspace.addRepositoryToGroup("G", githubRepository1);
+        workspace.addRepositoryToGroup("G", githubRepository2);
 
         assertEquals(2, workspace.getAllRepositories().size());
     }

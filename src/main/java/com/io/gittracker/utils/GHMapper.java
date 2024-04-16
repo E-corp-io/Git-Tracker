@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GHPullRequest;
 import org.kohsuke.github.GHRepository;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ public class GHMapper {
                     pullRequest.getCreatedAt(),
                     pullRequest.getUpdatedAt(),
                     pullRequest.getTitle(),
+                    pullRequest.getState().equals(GHIssueState.CLOSED),
                     githubService);
 
             pr.setCommentList(getComments(pullRequest));
