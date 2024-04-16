@@ -170,27 +170,28 @@ public class MainViewPresenter {
         scrollPane.setContent(repositories);
     }
 
-    private VBox[] createWorkspaceView(Workspace workspace) {
-        return workspace.getGroups().stream().map(this::createGroupView).toArray(VBox[]::new);
+    private Accordion[] createWorkspaceView(Workspace workspace) {
+        return workspace.getGroups().stream().map(this::createGroupView).toArray(Accordion[]::new);
     }
 
-    private VBox createGroupView(Group group) {
+    private Accordion createGroupView(Group group) {
         TitledPane[] panes =
                 group.getRepositories().stream().map(this::createRepositoryPane).toArray(TitledPane[]::new);
-        VBox vBox = new VBox(panes);
-        vBox.getStyleClass().add("group-view-vbox");
-        vBox.prefHeight(0);
-        group.getRepositoriesProperty().addListener(createGithubRepositoryListChangeListener(vBox));
-        return vBox;
+        //        VBox vBox = new VBox(panes);
+        Accordion accordion = new Accordion(panes);
+        accordion.getStyleClass().add("group-view-vbox");
+        accordion.prefHeight(0);
+        group.getRepositoriesProperty().addListener(createGithubRepositoryListChangeListener(accordion));
+        return accordion;
     }
 
     /** Listen to changes and create a view for new repositories  */
-    private ListChangeListener<GithubRepository> createGithubRepositoryListChangeListener(VBox vBox) {
+    private ListChangeListener<GithubRepository> createGithubRepositoryListChangeListener(Accordion accordion) {
         return (ListChangeListener.Change<? extends GithubRepository> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     List<? extends GithubRepository> addedRepositories = change.getAddedSubList();
-                    addedRepositories.forEach(repo -> vBox.getChildren().add(createRepositoryPane(repo)));
+                    addedRepositories.forEach(repo -> accordion.getPanes().add(createRepositoryPane(repo)));
                 }
             }
         };

@@ -4,36 +4,35 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TitledPane fx:id="rootPane" animated="false" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.io.gittracker.controllers.RepositoryPresenter">
+<TitledPane fx:id="rootPane" animated="false" stylesheets="@../styles/styles.css"
+            xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.io.gittracker.controllers.RepositoryPresenter">
     <graphic>
         <GridPane fx:id="gridPane" alignment="TOP_CENTER" StackPane.alignment="CENTER">
             <columnConstraints>
-                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="5.0" />
-                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="75.0" />
-                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="20.0" />
+                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="5.0"/>
+                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="75.0"/>
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="20.0"/>
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints vgrow="SOMETIMES" />
-                <RowConstraints vgrow="SOMETIMES" />
+                <RowConstraints vgrow="SOMETIMES"/>
+                <RowConstraints vgrow="SOMETIMES"/>
             </rowConstraints>
-            <children>
-                <Label fx:id="repositoryNameLabel" text="Repository name Repository name Repository name " wrapText="true" GridPane.columnIndex="1" />
-                <Label fx:id="lastPrDateLabel" text="..........." GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Label fx:id="newPrCountLabel" text="-" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                <Label fx:id="groupLabel" text="......." GridPane.columnIndex="2" />
-            </children>
             <StackPane.margin>
-                <Insets top="5.0" />
+                <Insets top="5.0"/>
             </StackPane.margin>
             <padding>
-                <Insets top="5.0" />
+                <Insets top="5.0"/>
             </padding>
+            <Label fx:id="repositoryNameLabel" text="Repository name Repository name Repository name " wrapText="true"
+                   GridPane.columnIndex="1" styleClass="important"/>
+            <Label fx:id="lastPrDateLabel" text="..........." GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Label fx:id="newPrCountLabel" text="-" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+            <Label fx:id="groupLabel" text="......." GridPane.columnIndex="2"/>
         </GridPane>
     </graphic>
-    <content>
-        <VBox fx:id="pullRequestsVBox" alignment="CENTER_LEFT" fillWidth="false" style="-fx-background-color: #686c74;" />
-    </content>
-   <padding>
-      <Insets left="10.0" />
-   </padding>
+    <padding>
+        <Insets left="10.0"/>
+    </padding>
+    <VBox fx:id="pullRequestsVBox" alignment="CENTER_LEFT" fillWidth="false" styleClass="repo-box" />
 </TitledPane>

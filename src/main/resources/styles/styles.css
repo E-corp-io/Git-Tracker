@@ -90,17 +90,62 @@ Button:pressed {
     -fx-cursor: hand;
 }
 
+.scroll-pane {
+    -fx-border-color: #686c74;
+}
 
 .scroll-pane .viewport {
-    /*-fx-background-color: #686c74;*/
-    -fx-background-color: white;
+    -fx-background-color: #686c74;
+    -fx-border-color: #686c74;
+    /*-fx-border-color: #383c44;*/
+}
+
+.scroll-pane {
+    -fx-background-color: #686c74;
 }
 
 .titled-pane .title {
     -fx-background-color: #383c44;
 }
 
+.titled-pane {
+    -fx-background-color: #383c44;
+}
+
+.titledPane > .title > .arrow-button > .arrow{
+    -fx-background-color: white;
+    -fx-effect: null;
+}
+
+.titled-pane > .title > .arrow-button .arrow
+{
+    -fx-background-color: #d7a31a;
+    -fx-padding: 0.25em 0.3125em 0.25em 0.3125em; /* 3 3.75 3 3.75 */
+    -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+}
+
+.titled-pane:focused > .title > .arrow-button .arrow
+{
+    -fx-background-color: #d7a31a;
+    -fx-effect: null;
+}
+
 .group-view-vbox {
     -fx-padding: 0 0 0 10;
     -fx-spacing: 5px;
+    -fx-border-color: #686c74;
+}
+
+.repo-box {
+    -fx-background-color: #383c44;
+}
+
+.important {
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+}
+
+.accordion > .titled-pane {
+    -fx-border-width: 3px;
+    -fx-border-color: #686c74;
 }
