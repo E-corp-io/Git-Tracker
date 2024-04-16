@@ -1,34 +1,32 @@
 package com.io.gittracker.model;
 
 import com.io.gittracker.services.GithubService;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
 
 public final class Workspace implements Serializable, Refreshable {
-    private String name;
-    private final List<Group> groups;
+    private final String name;
+    private transient ListProperty<Group> groupsProperty =
+            new SimpleListProperty<>(FXCollections.observableArrayList());
 
     public Workspace(String name) {
         this.name = name;
-
-        groups = new ArrayList<>();
-        groups.add(getDefaultGroup());
+        groupsProperty.add(getDefaultGroup());
     }
 
     public String getName() {
         return name;
     }
 
-    public void addGroup(Group group) {
-        groups.add(group);
-    }
-
     public boolean checkIfWorkspaceExists(String name) {
-        for (Group group : groups) {
+        for (Group group : groupsProperty) {
             if (group.getName().equals(name)) {
                 return true;
             }
@@ -37,28 +35,34 @@ public final class Workspace implements Serializable, Refreshable {
     }
 
     public List<GithubRepository> getAllRepositories() {
-        return groups.stream()
+        return groupsProperty.stream()
                 .flatMap(group -> group.getRepositories().stream())
                 .toList();
     }
 
     public List<Group> getGroups() {
-        return groups;
+        return new ArrayList<>(groupsProperty.getValue());
     }
 
-    public Group createNewGroup(long id, String name) {
-        Group group = new Group(id, name);
-        groups.add(group);
+    public ListProperty<Group> getGroupsProperty() {
+        return groupsProperty;
+    }
+
+    public Group createAndAddNewGroup(String name) {
+        Group group = new Group(name);
+        groupsProperty.add(group);
         return group;
     }
 
     public void addRepositoryToDefaultGroup(GithubRepository repository) {
         if (repository == null) return;
-        groups.get(0).addRepository(repository);
+        groupsProperty.get(0).addRepository(repository);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void addRepositoryToGroup(String groupName, GithubRepository repository) {
+        int idx = groupsProperty.indexOf(new Group(groupName));
+        if (idx == -1) throw new IllegalArgumentException("Group " + groupName + " doesn't exists");
+        groupsProperty.get(idx).addRepository(repository);
     }
 
     @Override
@@ -66,12 +70,12 @@ public final class Workspace implements Serializable, Refreshable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Workspace workspace = (Workspace) o;
-        return Objects.equals(name, workspace.name) && Objects.equals(groups, workspace.groups);
+        return Objects.equals(name, workspace.name) && Objects.equals(groupsProperty, workspace.groupsProperty);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, groups);
+        return Objects.hash(name, groupsProperty);
     }
 
     @Override
@@ -80,27 +84,33 @@ public final class Workspace implements Serializable, Refreshable {
                 Workspace: %s
                 Groups: %s
                 """
-                .formatted(name, groups.stream().map(Group::getName).collect(Collectors.joining(", ")));
+                .formatted(name, groupsProperty.stream().map(Group::getName).collect(Collectors.joining(", ")));
     }
 
     @Override
     public void refresh(GithubService githubService, ExecutorService executorService) {
         System.out.println("Refreshing workspace");
-        groups.forEach(g -> {
-            g.refresh(githubService, executorService);
-        });
-    }
-
-    public Group newGroup(long id, String name) {
-        return new Group(id, name);
+        groupsProperty.forEach(g -> g.refresh(githubService, executorService));
     }
 
     public Group getDefaultGroup() {
-        return new Group(0, "DEFAULT");
+        return new Group("ALL");
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(new ArrayList<>(groupsProperty.getValue()));
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        groupsProperty = new SimpleListProperty<>(FXCollections.observableList((List<Group>) in.readObject()));
     }
 
     public void removeRepo(GithubRepository repo) {
-        this.groups.forEach(group -> {
+        this.groupsProperty.forEach(group -> {
             group.getRepositories().remove(repo);
         });
     }

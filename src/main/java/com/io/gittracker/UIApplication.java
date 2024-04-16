@@ -42,6 +42,7 @@ public class UIApplication extends Application {
     @Override
     public void stop() {
         AppStateService service = context.getBean(AppStateService.class);
+        System.out.println("Saving app state...");
         service.saveAppState();
         context.close();
         Platform.exit();

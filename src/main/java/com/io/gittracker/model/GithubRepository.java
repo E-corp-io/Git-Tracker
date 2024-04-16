@@ -1,20 +1,16 @@
 package com.io.gittracker.model;
 
-import com.google.gson.*;
 import com.io.gittracker.services.GithubService;
 import com.io.gittracker.utils.GHMapper;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import org.kohsuke.github.*;
-import org.kohsuke.github.GHDirection;
-import org.kohsuke.github.GHIssueState;
-import org.kohsuke.github.GHPullRequest;
-import org.kohsuke.github.GHPullRequestQueryBuilder;
-import org.kohsuke.github.GHRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,13 +21,16 @@ public class GithubRepository implements Refreshable, Serializable {
     private URL htmlUrl;
     private String name;
     private Map<Long, PullRequest> pullRequestsMap = new HashMap<>();
-    private Optional<PullRequest> latestPullRequest = Optional.empty();
+    private transient Optional<PullRequest> latestPullRequest = Optional.empty();
     private List<String> labels = new ArrayList<>();
-    private Group workspaceGroup; // TODO: remove
+    private transient ListProperty<PullRequest> pullRequestListProperty =
+            new SimpleListProperty<>(FXCollections.observableArrayList());
     transient Logger logger = LoggerFactory.getLogger(GithubRepository.class);
 
-    public GithubRepository(long id) {
-        this.id = id;
+    public GithubRepository(GHRepository ghRepository) {
+        this.id = ghRepository.getId();
+        this.name = ghRepository.getName();
+        this.htmlUrl = ghRepository.getHtmlUrl();
     }
 
     public Optional<PullRequest> getLatestPullRequest() {
@@ -41,6 +40,10 @@ public class GithubRepository implements Refreshable, Serializable {
 
     public List<PullRequest> getPullRequests() {
         return pullRequestsMap.values().stream().toList();
+    }
+
+    public ListProperty<PullRequest> getPullRequestsProperty() {
+        return pullRequestListProperty;
     }
 
     void mergePullRequests(List<PullRequest> newPullRequests) {
@@ -53,10 +56,7 @@ public class GithubRepository implements Refreshable, Serializable {
             }
         }
         latestPullRequest = pullRequestsMap.values().stream().max(Comparator.comparing(PullRequest::getUpdatedAtDate));
-    }
-
-    public void setWorkspaceGroup(Group workspaceGroup) {
-        this.workspaceGroup = workspaceGroup;
+        pullRequestListProperty.setAll(pullRequestsMap.values());
     }
 
     List<PullRequest> fetchPullRequests(GithubService githubService) {
@@ -113,10 +113,6 @@ public class GithubRepository implements Refreshable, Serializable {
         return id;
     }
 
-    public Group getWorkspaceGroup() {
-        return workspaceGroup;
-    }
-
     public List<String> getLabels() {
         return labels;
     }
@@ -134,8 +130,22 @@ public class GithubRepository implements Refreshable, Serializable {
             this.name = new_values.name;
             this.pullRequestsMap = new_values.pullRequestsMap;
             this.latestPullRequest = new_values.latestPullRequest;
+            this.pullRequestListProperty.setAll(new_values.pullRequestsMap.values());
         });
         executorService.execute(task);
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(new ArrayList<>(pullRequestListProperty.get()));
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        pullRequestListProperty =
+                new SimpleListProperty<>(FXCollections.observableList((List<PullRequest>) in.readObject()));
     }
 
     static class RefreshRepoTask extends Task<Optional<GithubRepository>> {
@@ -149,9 +159,8 @@ public class GithubRepository implements Refreshable, Serializable {
 
         @Override
         protected Optional<GithubRepository> call() {
-            System.out.println("Refreshing repo");
-            GithubRepository ret = new GithubRepository(parent.id);
-            ret.workspaceGroup = parent.workspaceGroup;
+            System.out.println("Refreshing " + parent.name);
+            GithubRepository ret = new GithubRepository(githubService.getRepositoryById(parent.id));
             ret.labels = parent.labels;
             ret.logger = parent.logger;
 
@@ -160,7 +169,7 @@ public class GithubRepository implements Refreshable, Serializable {
             ret.name = repository.getName();
             var pullRequests = ret.fetchPullRequests(githubService);
             ret.mergePullRequests(pullRequests);
-            System.out.println("Refreshing repo finished");
+            System.out.println("Refreshing " + parent.name + " finished");
 
             return Optional.of(ret);
         }

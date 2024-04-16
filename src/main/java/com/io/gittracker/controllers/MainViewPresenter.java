@@ -2,31 +2,30 @@ package com.io.gittracker.controllers;
 
 import com.io.gittracker.UIMain;
 import com.io.gittracker.model.GithubRepository;
+import com.io.gittracker.model.Group;
 import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.services.GithubService;
 import com.io.gittracker.services.TokenService;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javafx.application.HostServices;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.ListChangeListener;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,49 +42,93 @@ public class MainViewPresenter {
     @FXML
     public ProgressIndicator refreshProgress;
 
-    private HostServices hostServices;
+    public ScrollPane scrollPane;
 
     @Autowired
     private GithubService githubService;
 
-    @Autowired
-    private void setHostServices(HostServices hostServices) {
-        this.hostServices = hostServices;
-    }
+    @FXML
+    private ListView<Workspace> workspaceListView;
 
     @FXML
-    private ListView<String> classes;
+    private ListView<Group> groupsListView;
 
     @FXML
-    private ListView<String> groups;
-
-    @FXML
-    private ListView<String> other;
+    private ListView<String> otherListView;
 
     @FXML
     private Label newRepoLabel;
 
-    private final ObservableList<String> workspaces = FXCollections.observableArrayList();
+    private final ListProperty<Workspace> workspacesProperty = new SimpleListProperty<>();
+
+    // Overall structure,
+    // WorkspaceView (VBox)
+    //     GroupView (Vbox)
+    //         RepositoryPane (TitledPane)
+    //         RepositoryPane (TitledPane)
+    //     GroupView (Vbox)
+    //         RepositoryPane (TitledPane)
+    //         RepositoryPane (TitledPane)
+
+    // WorkspaceViews are kept in map to easily switch between them
+    // Each RepositoryPane is a repositoryPane.fxml
+    private final Map<String, VBox> workspaceViews = new HashMap<>();
+
+    @FXML
+    private VBox groupVBox;
+
+    public MainViewPresenter(TokenService tokenService, UIMain uiMain, AppStateService appStateService) {
+        this.tokenService = tokenService;
+        this.uiMain = uiMain;
+        this.appStateService = appStateService;
+    }
 
     public void initialize() {
-        if (appStateService.getAppState().getWorkspaces().isEmpty()) {
+        if (appStateService.getAppState().getWorkspacesProperty().isEmpty()) {
             createDefaultContent();
         }
 
-        classes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+        // display workspace names in listView
+        workspaceListView.setCellFactory(param -> new ListCell<>() {
             @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                System.out.println("Selected value changed: " + newValue);
-                setCurrentWorkspace(newValue);
-                createTilesFromList();
+            protected void updateItem(Workspace workspace, boolean empty) {
+                super.updateItem(workspace, empty);
+                if (empty || workspace == null) {
+                    setText(null);
+                } else {
+                    setText(workspace.getName());
+                }
             }
         });
 
-        // Add sample items to the lists
-        setWorkspaceList();
-        groups.getItems().addAll("Grupa 1", "Grupa 2", "Grupa 4", "Grupa 4");
-        other.getItems().addAll("Graded", "Not Graded", "Overdue", "Not Overdue");
-        createTilesFromList();
+        // display workspace names in listView
+        groupsListView.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Group group, boolean empty) {
+                super.updateItem(group, empty);
+                if (empty || group == null) {
+                    setText(null);
+                } else {
+                    setText(group.getName());
+                }
+            }
+        });
+
+        workspaceListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) return;
+
+            viewWorkspace(newValue);
+            List<Group> groups = newValue.getGroups();
+            groupsListView.getItems().setAll(groups);
+        });
+
+        workspacesProperty.addListener((observableValue, oldValue, newValue) -> {
+            workspaceListView.getItems().setAll(newValue);
+        });
+
+        workspacesProperty.bind(appStateService.getWorkspacesProperty());
+
+        if (!workspacesProperty.isEmpty()) viewWorkspace(workspacesProperty.get(0));
     }
 
     void createDefaultContent() {
@@ -97,112 +140,89 @@ public class MainViewPresenter {
             return;
         }
 
-        io.addRepositoryToDefaultGroup(githubService.getRepository("E-corp-io/Git-Tracker"));
-        io.addRepositoryToDefaultGroup(githubService.getRepository("E-corp-io/GIT-TRACKER-API-TESTS"));
-        os.addRepositoryToDefaultGroup(githubService.getRepository("nodejs/node"));
-        appStateService.getAppState().addWorkspace(io);
-        appStateService.getAppState().addWorkspace(to);
-        appStateService.getAppState().addWorkspace(os);
+        otherListView.getItems().addAll("Graded", "Not Graded", "Overdue", "Not Overdue");
 
-        classes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                System.out.println("Selected value changed: " + newValue);
-                setCurrentWorkspace(newValue);
-                createTilesFromList();
-            }
-        });
+        io.createAndAddNewGroup("G1");
+        io.createAndAddNewGroup("G2");
+        io.createAndAddNewGroup("G3");
+        io.createAndAddNewGroup("G4");
 
-        // Add sample items to the lists
-        setWorkspaceList();
-        groups.getItems().addAll("Grupa 1", "Grupa 2", "Grupa 4", "Grupa 4");
-        other.getItems().addAll("Graded", "Not Graded", "Overdue", "Not Overdue");
-        createTilesFromList();
+        io.addRepositoryToGroup("G1", githubService.getRepository("E-corp-io/Git-Tracker"));
+        to.addRepositoryToDefaultGroup(githubService.getRepository("E-corp-io/GIT-TRACKER-API-TESTS"));
+        os.addRepositoryToDefaultGroup(githubService.getRepository("id-Software/DOOM"));
+
+        appStateService.addWorkspace(io);
+        appStateService.addWorkspace(to);
+        appStateService.addWorkspace(os);
     }
 
     private Workspace currentWorkspace;
 
-    private void setCurrentWorkspace(String name) {
-        this.currentWorkspace = this.appStateService.getAppState().getWorkspaceByName(name);
+    private void viewWorkspace(Workspace workspace) {
+        this.currentWorkspace = workspace;
+        if (this.currentWorkspace == null) return;
+
+        VBox repositories = workspaceViews.computeIfAbsent(workspace.getName(), name -> {
+            VBox vBox = new VBox(createWorkspaceView(this.currentWorkspace));
+            this.currentWorkspace.getGroupsProperty().addListener(createGroupListChangeListener(vBox));
+            return vBox;
+        });
+        scrollPane.setContent(repositories);
     }
 
-    private void setWorkspaceList() {
-        this.workspaces.addAll(
-                appStateService.getWorkspaces().stream().map(Workspace::getName).toList());
-        classes.setItems(workspaces);
+    private VBox[] createWorkspaceView(Workspace workspace) {
+        return workspace.getGroups().stream().map(this::createGroupView).toArray(VBox[]::new);
     }
 
-    public void setList() {
-        clearTileList();
-        ObservableList<String> items = FXCollections.observableArrayList(
-                appStateService.getWorkspaces().stream().map(Workspace::getName).toList());
-        classes.setItems(items);
-        createTilesFromList();
+    private VBox createGroupView(Group group) {
+        TitledPane[] panes =
+                group.getRepositories().stream().map(this::createRepositoryPane).toArray(TitledPane[]::new);
+        VBox vBox = new VBox(panes);
+        vBox.getStyleClass().add("group-view-vbox");
+        vBox.prefHeight(0);
+        group.getRepositoriesProperty().addListener(createGithubRepositoryListChangeListener(vBox));
+        return vBox;
     }
 
-    public MainViewPresenter(TokenService tokenService, UIMain uiMain, AppStateService appStateService) {
-        this.tokenService = tokenService;
-        this.uiMain = uiMain;
-        this.appStateService = appStateService;
+    /** Listen to changes and create a view for new repositories  */
+    private ListChangeListener<GithubRepository> createGithubRepositoryListChangeListener(VBox vBox) {
+        return (ListChangeListener.Change<? extends GithubRepository> change) -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    List<? extends GithubRepository> addedRepositories = change.getAddedSubList();
+                    addedRepositories.forEach(repo -> vBox.getChildren().add(createRepositoryPane(repo)));
+                }
+            }
+        };
     }
 
-    @FXML
-    private TilePane repoBox;
+    /** Listen to changes and create a view for new groups  */
+    private ListChangeListener<Group> createGroupListChangeListener(VBox vBox) {
+        return (ListChangeListener.Change<? extends Group> change) -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    List<? extends Group> addedGroups = change.getAddedSubList();
+                    addedGroups.forEach(repo -> vBox.getChildren().add(createGroupView(repo)));
+                }
+            }
+        };
+    }
 
-    public void createTilesFromList() {
-        clearTileList();
-        if (this.currentWorkspace == null) {
-            return;
+    private TitledPane createRepositoryPane(GithubRepository repository) {
+        FXMLLoader fxmlLoader = new FXMLLoader(UIMain.class.getClassLoader().getResource("fxml/repositoryPane.fxml"));
+        fxmlLoader.setControllerFactory(uiMain.getApplicationContext()::getBean);
+        TitledPane pane = null;
+        try {
+            pane = fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        this.currentWorkspace.getGroups().stream()
-                .flatMap(group -> group.getRepositories().stream())
-                .forEach(repo -> {
-                    if (repo != null) {
-                        repoBox.getChildren().add(createTile(repo));
-                    }
-                });
-    }
-
-    private void clearTileList() {
-        this.repoBox.getChildren().clear();
-    }
-
-    private VBox createTile(GithubRepository repo) {
-        VBox tile = new VBox();
-        tile.getStyleClass().add("repoTile");
-        HBox upperRow = new HBox();
-        HBox lowerRow = new HBox();
-        Label repoName = new Label(repo.getName());
-        repoName.getStyleClass().add("clickable");
-        repoName.setOnMouseClicked(event -> {
-            System.out.println(repo.getHtmlUrl().toString());
-            this.hostServices.showDocument(repo.getHtmlUrl().toString());
-        });
-        Label lastCommit = new Label();
-        var latest_pr_optional = repo.getLatestPullRequest();
-        latest_pr_optional.ifPresentOrElse(
-                pullRequest -> {
-                    lastCommit.setText(String.format(pullRequest.getUpdatedAtDate() + " | " + pullRequest.getTitle()));
-                },
-                () -> {
-                    lastCommit.setText("Last PR unknown");
-                });
-        Button deleteButton = new Button();
-        deleteButton.setText("X");
-        deleteButton.setStyle("-fx-background-color: #c20000; -fx-pref-width: 20; -fx-pref-height: 20");
-        deleteButton.setOnAction(event -> {
-            this.repoBox.getChildren().remove(tile);
-            currentWorkspace.removeRepo(repo);
-        });
-        Region region = new Region();
-        HBox.setHgrow(region, Priority.valueOf("ALWAYS"));
-        upperRow.getChildren().add(repoName);
-        lowerRow.getChildren().add(lastCommit);
-        lowerRow.getChildren().add(region);
-        lowerRow.getChildren().add(deleteButton);
-        tile.getChildren().add(upperRow);
-        tile.getChildren().add(lowerRow);
-        return tile;
+        if (fxmlLoader.getController() instanceof RepositoryPresenter repositoryPresenter) {
+            repositoryPresenter.initialize(repository, scrollPane);
+        } else {
+            System.err.println("Repository should have controller of class RepositoryPresenter");
+        }
+        return pane;
     }
 
     @FXML
@@ -229,7 +249,6 @@ public class MainViewPresenter {
         var task = new RefreshTask(appStateService, refreshExecutor, githubService);
         task.setOnSucceeded(event -> {
             refreshProgress.setVisible(false);
-            this.createTilesFromList();
         });
         Thread th = new Thread(task);
         th.setDaemon(true);

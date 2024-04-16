@@ -5,6 +5,9 @@ import com.io.gittracker.model.PermaStorage;
 import com.io.gittracker.model.Workspace;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import javafx.beans.property.ListProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +15,8 @@ public class AppStateService {
 
     private final PermaStorage permaStorage;
     private final AppState appState;
+
+    private final Logger logger = LoggerFactory.getLogger(AppStateService.class);
 
     public AppStateService(PermaStorage permaStorage) {
         this.permaStorage = permaStorage;
@@ -23,7 +28,11 @@ public class AppStateService {
     }
 
     public List<Workspace> getWorkspaces() {
-        return appState.getWorkspaces();
+        return appState.getWorkspacesProperty();
+    }
+
+    public ListProperty<Workspace> getWorkspacesProperty() {
+        return appState.getWorkspacesProperty();
     }
 
     public void saveAppState() {
@@ -38,7 +47,11 @@ public class AppStateService {
      * fetches all data for API and propagates the changes
      */
     public void refresh(GithubService githubService, ExecutorService executorService) {
-        System.out.println("Refreshing app state");
-        appState.getWorkspaces().forEach(w -> w.refresh(githubService, executorService));
+        logger.info("Refreshing app state");
+        appState.getWorkspacesProperty().forEach(w -> w.refresh(githubService, executorService));
+    }
+
+    public void addWorkspace(Workspace workspace) {
+        appState.getWorkspacesProperty().add(workspace);
     }
 }

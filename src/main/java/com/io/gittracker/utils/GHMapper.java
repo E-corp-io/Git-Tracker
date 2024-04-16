@@ -26,7 +26,7 @@ public class GHMapper {
     }
 
     public static GithubRepository mapToRepo(GithubService githubService, GHRepository ghRepository) {
-        var repo = new GithubRepository(ghRepository.getId());
+        GithubRepository repo = new GithubRepository(ghRepository);
         // TODO: refresh repo on separate thread
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         repo.refresh(githubService, executorService);
