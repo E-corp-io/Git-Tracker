@@ -1,4 +1,4 @@
-package com.io.gittracker.model;
+package com.io.gittracker.utils;
 
 import com.google.gson.*;
 import java.lang.reflect.ParameterizedType;

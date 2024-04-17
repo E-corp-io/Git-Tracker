@@ -1,6 +1,8 @@
 package com.io.gittracker.model;
 
 import com.google.gson.*;
+import com.io.gittracker.utils.GsonListPropertyDeserializer;
+import com.io.gittracker.utils.GsonOptionalDeserializer;
 import dev.dirs.ProjectDirectories;
 import java.io.*;
 import java.util.Optional;
