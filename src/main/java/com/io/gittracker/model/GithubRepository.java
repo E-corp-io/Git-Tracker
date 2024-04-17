@@ -1,5 +1,7 @@
 package com.io.gittracker.model;
 
+import static com.io.gittracker.model.Workspace.DEFAULT_GROUP;
+
 import com.io.gittracker.services.GithubService;
 import com.io.gittracker.utils.GHMapper;
 import java.io.*;
@@ -27,8 +29,11 @@ public class GithubRepository implements Refreshable, Serializable {
     private URL htmlUrl;
     private String name;
     private Map<Long, PullRequest> pullRequestsMap = new HashMap<>();
+
     private Optional<PullRequest> latestPullRequest = Optional.empty();
     private List<String> labels = new ArrayList<>();
+
+    private String groupName = DEFAULT_GROUP;
     private ListProperty<PullRequest> pullRequestListProperty =
             new SimpleListProperty<>(FXCollections.observableArrayList());
     transient Logger logger = LoggerFactory.getLogger(GithubRepository.class);
@@ -103,10 +108,7 @@ public class GithubRepository implements Refreshable, Serializable {
 
     @Override
     public String toString() {
-        return "Repository[" + "githubName="
-                + name + ", " + "url="
-                + htmlUrl + ", " + "grade="
-                + labels + ", " + "group=";
+        return "Repository[" + "githubName=" + name + ", " + "url=" + htmlUrl + ", " + "grade=" + labels;
     }
 
     public String getName() {
@@ -154,6 +156,18 @@ public class GithubRepository implements Refreshable, Serializable {
         in.defaultReadObject();
         pullRequestListProperty =
                 new SimpleListProperty<>(FXCollections.observableList((List<PullRequest>) in.readObject()));
+    }
+
+    public int getPullRequestsCount() {
+        return pullRequestsMap.size();
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     static class RefreshRepoTask extends Task<Optional<GithubRepository>> {

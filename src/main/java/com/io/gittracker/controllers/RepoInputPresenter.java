@@ -1,7 +1,6 @@
 package com.io.gittracker.controllers;
 
 import com.io.gittracker.model.GithubRepository;
-import com.io.gittracker.model.Group;
 import com.io.gittracker.model.Workspace;
 import com.io.gittracker.services.AppStateService;
 import com.io.gittracker.services.GithubService;
@@ -28,7 +27,7 @@ public class RepoInputPresenter {
     private ComboBox<Workspace> workspaceComboBox;
 
     @FXML
-    private ComboBox<Group> groupComboBox;
+    private ComboBox<String> groupComboBox;
 
     @FXML
     private Button confirmButton;
@@ -118,40 +117,6 @@ public class RepoInputPresenter {
             }
             groupComboBox.getSelectionModel().selectFirst();
         });
-        groupComboBox.setCellFactory(new Callback<ListView<Group>, ListCell<Group>>() {
-            @Override
-            public ListCell<Group> call(ListView<Group> param) {
-                return new ListCell<Group>() {
-                    @Override
-                    protected void updateItem(Group group, boolean empty) {
-                        super.updateItem(group, empty);
-                        if (group != null) {
-                            setText(group.getName());
-                        } else {
-                            setText(null);
-                        }
-                    }
-                };
-            }
-        });
-        groupComboBox.setConverter(new StringConverter<Group>() {
-            @Override
-            public String toString(Group group) {
-                return group != null ? group.getName() : "";
-            }
-
-            @Override
-            public Group fromString(String string) {
-                if (string == null || string.trim().isEmpty()) {
-                    return null;
-                } else {
-                    for (Group group : workspaceComboBox.getValue().getGroups()) {
-                        if (group.getName().equals(string)) return group;
-                    }
-                    return new Group(string);
-                }
-            }
-        });
         groupComboBox.getItems().setAll(workspaceComboBox.getValue().getGroups());
         groupComboBox.getSelectionModel().selectFirst();
     }
@@ -161,9 +126,9 @@ public class RepoInputPresenter {
         String address = inputRepo.getText();
         Workspace workspace = workspaceComboBox.getValue();
         if (workspace == null) return; // Should not happen
-        Group group = groupComboBox.getValue();
+        String groupName = groupComboBox.getValue();
 
-        System.out.printf("Adding %s to group %s and workspace %s%n", address, group.getName(), workspace.getName());
+        System.out.printf("Adding %s to group %s and workspace %s%n", address, groupName, workspace.getName());
 
         // todo move this elsewhere
 
@@ -177,15 +142,17 @@ public class RepoInputPresenter {
 
         if (repository == null) return;
 
+        // this the only place where groupName is set on repository
+        repository.setGroupName(groupName);
+
         if (!appStateService.getWorkspacesProperty().contains(workspace)) {
             appStateService.getWorkspacesProperty().add(workspace);
         }
-        if (!workspace.getGroups().contains(group)) {
-            group.setWorkspace(workspace);
-            workspace.getGroupsProperty().add(group);
+        if (!workspace.getGroups().contains(groupName)) {
+            workspace.getGroupsProperty().add(groupName);
         }
 
-        group.addRepository(repository);
+        workspace.getRepositoriesProperty().add(repository);
 
         // TODO: make adding async - the repo url may be bad!
         ((Stage) this.cancelButton.getScene().getWindow()).close();

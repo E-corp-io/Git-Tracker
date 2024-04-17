@@ -14,7 +14,7 @@ public class PullRequest implements Serializable {
     private List<PRComment> commentList;
     private PRStats prStats;
     private Grade grade;
-    private boolean merged;
+    private boolean closed;
     private URL htmlURL;
     private final Date createdAtDate;
     private Date updatedAtDate;
@@ -48,8 +48,8 @@ public class PullRequest implements Serializable {
         return commentList;
     }
 
-    public boolean isMerged() {
-        return merged;
+    public boolean isClosed() {
+        return state.equals(GHIssueState.CLOSED);
     }
 
     public Date getCreatedAt() {
@@ -96,7 +96,7 @@ public class PullRequest implements Serializable {
         this.prStats = pr.prStats;
         this.updatedAtDate = pr.updatedAtDate;
         this.commentList = pr.commentList;
-        this.merged = pr.isMerged();
+        this.closed = pr.isClosed();
     }
 
     public Grade getGrade() {

@@ -1,6 +1,6 @@
 .root {
     -fx-background-color: #686c74;
-    -fx-padding: 10px;
+    /*-fx-padding: 10px;*/
 }
 
 .list-cell{
@@ -12,7 +12,7 @@
     -fx-background-color: #373a43;
 }
 
-.list-cell:selected {
+.list-view .list-cell:selected {
     -fx-background-color: #d7a31a;
 }
 
@@ -24,10 +24,10 @@
 
 .vbox{
     -fx-text-fill: #ffffff;
-    -fx-padding: 20px;
+    /*-fx-padding: 20px;*/
     -fx-background-color: #383c44;
 }
-.label{
+.label, .check-box {
     -fx-text-fill: #ffffff;
 }
 
@@ -63,7 +63,7 @@ Label {
     -fx-text-fill: #333;
 }
 
-TextField {
+.token-text-field {
     -fx-pref-width: 200px;
     -fx-pref-height: 30px;
     -fx-font-size: 14px;
@@ -141,11 +141,32 @@ Button:pressed {
 }
 
 .important {
-    -fx-font-size: 16;
+    -fx-font-size: 18;
     -fx-font-weight: bold;
 }
 
 .accordion > .titled-pane {
     -fx-border-width: 3px;
     -fx-border-color: #686c74;
+}
+
+.sorting-options-grid-pane {
+    -fx-padding: 10px;
+}
+
+.main-menu-bar {
+    -fx-background-color: #1b1d21;
+}
+
+.pr-border{
+    -fx-border-color: #686c74;
+    -fx-border-insets: 5;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-style: solid;
+    -fx-padding: 10;
+}
+
+.pr-title{
+    -fx-font-size: 16;
+    -fx-font-weight: bolder;
 }
