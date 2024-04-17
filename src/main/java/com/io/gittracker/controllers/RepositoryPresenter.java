@@ -4,6 +4,7 @@ import com.io.gittracker.model.GithubRepository;
 import com.io.gittracker.model.PullRequest;
 import com.io.gittracker.view.PullRequestListView;
 import com.io.gittracker.view.RepositoryView;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.function.Predicate;
 import javafx.application.HostServices;
@@ -87,11 +88,14 @@ public class RepositoryPresenter {
         pullRequestsVBox
                 .getChildren()
                 .addAll(newPullRequests.stream()
+                        .sorted(Comparator.comparing(PullRequest::getUpdatedAtDate)
+                                .reversed())
                         .map(pr -> new PullRequestListView(pr, hostServices))
                         .toList());
 
         newPrCountLabel.setText(String.valueOf(pullRequestsVBox.getChildren().size()));
-        String latestDate = String.valueOf(newPullRequests.stream()
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        String latestDate = format.format(newPullRequests.stream()
                 .max(Comparator.comparing(PullRequest::getUpdatedAtDate))
                 .get()
                 .getUpdatedAtDate());

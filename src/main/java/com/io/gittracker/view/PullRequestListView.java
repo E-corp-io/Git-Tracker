@@ -1,9 +1,11 @@
 package com.io.gittracker.view;
 
 import com.io.gittracker.model.PullRequest;
+import java.text.SimpleDateFormat;
 import java.util.function.Predicate;
 import javafx.application.HostServices;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class PullRequestListView extends VBox {
@@ -11,16 +13,22 @@ public class PullRequestListView extends VBox {
 
     public PullRequestListView(PullRequest pr, HostServices hs) {
         this.pr = pr;
-        Label prLabel = new Label(pr.getTitle() + " | " + pr.getUpdatedAtDate());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        HBox line = new HBox();
+        Label prLabel = new Label(pr.getTitle());
         prLabel.getStyleClass().add("clickable");
         prLabel.getStyleClass().add("pr-title");
         getStyleClass().add("pr-border");
+
+        Label dateLabel = new Label(" | " + format.format(pr.getUpdatedAtDate()));
+        line.getChildren().add(prLabel);
+        line.getChildren().add(dateLabel);
 
         prLabel.setOnMouseClicked(event -> {
             hs.showDocument(pr.getHtmlURL().toString());
             event.consume();
         });
-        getChildren().add(prLabel);
+        getChildren().add(line);
         getChildren()
                 .addAll(pr.getComments().stream()
                         .map(prComment -> {
