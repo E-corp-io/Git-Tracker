@@ -6,6 +6,7 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.1.0'
     id "com.diffplug.spotless" version "6.25.0"
     id 'eclipse'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 spotless {
@@ -47,4 +48,9 @@ tasks.register('addPrePushGitHook', Copy) {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+shadowJar {
+    archiveFileName = "GitTracker.jar"
+    configurations = [project.configurations.runtimeClasspath]
 }
