@@ -58,6 +58,21 @@ public class PermaStorage {
         logger.debug("App state saved");
     }
 
+    public void saveState(AppState appState, File file) {
+        System.out.println(appState.getWorkspacesProperty().getValue());
+        logger.debug("Saving app state...");
+        String json = gson.toJson(appState);
+        logger.info("App state json: {}", json);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(json.getBytes());
+        } catch (Exception e) { // TODO: split into exceptions
+            logger.error("Saving state failed with", e);
+        }
+
+        logger.debug("App state saved");
+    }
+
     public AppState readState() {
         logger.debug("Reading app state");
 
@@ -84,5 +99,23 @@ public class PermaStorage {
         //            logger.error("Loading state file failed: {}", e.getLocalizedMessage());
         //        }
         //        return AppState.createDefault();
+    }
+
+    public AppState readState(File file) {
+        logger.debug("Reading app state");
+
+        AppState appState = new AppState();
+
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            String json = new String(fis.readAllBytes());
+
+            appState = gson.fromJson(json, AppState.class);
+            return appState;
+
+        } catch (Exception e) {
+            logger.error("Loading state file failed: {}", e.getLocalizedMessage());
+            return AppState.createDefault();
+        }
     }
 }

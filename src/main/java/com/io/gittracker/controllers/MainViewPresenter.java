@@ -12,6 +12,7 @@ import com.io.gittracker.services.TokenService;
 import com.io.gittracker.utils.sorting.*;
 import com.io.gittracker.view.RepositoryView;
 import com.io.gittracker.view.WorkspaceView;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -31,12 +32,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
+@Scope("prototype")
 public class MainViewPresenter {
     private final TokenService tokenService;
     private final UIMain uiMain;
@@ -368,6 +372,43 @@ public class MainViewPresenter {
         popupStage.setScene(popupScene);
         popupStage.setTitle("Add new repo");
         popupStage.show();
+    }
+
+    public void exitApplication(ActionEvent actionEvent) {
+        ((Stage) this.ascendingButton.getScene().getWindow()).close();
+        appStateService.saveAppState();
+    }
+
+    @FXML
+    public void openConfig(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Config");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Config files", "*.json"));
+        File selectedFile =
+                fileChooser.showOpenDialog(this.ascendingButton.getScene().getWindow());
+
+        if (selectedFile != null) {
+            System.out.println(selectedFile.getAbsolutePath());
+            appStateService.loadStateFromFile(selectedFile);
+
+            // load new version of this view
+            uiMain.loadSubjectView();
+        }
+    }
+
+    @FXML
+    public void saveConfig(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Config");
+        fileChooser.setInitialFileName("GTconfig.json");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Config files", "*.json"));
+        File selectedFile =
+                fileChooser.showSaveDialog(this.ascendingButton.getScene().getWindow());
+
+        if (selectedFile != null) {
+            System.out.println(selectedFile.getAbsolutePath());
+            appStateService.saveStateToFile(selectedFile);
+        }
     }
 
     static class RefreshTask extends Task<Void> {

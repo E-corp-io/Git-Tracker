@@ -3,6 +3,7 @@ package com.io.gittracker.services;
 import com.io.gittracker.model.AppState;
 import com.io.gittracker.model.PermaStorage;
 import com.io.gittracker.model.Workspace;
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import javafx.beans.property.ListProperty;
@@ -53,5 +54,16 @@ public class AppStateService {
 
     public void addWorkspace(Workspace workspace) {
         appState.getWorkspacesProperty().add(workspace);
+    }
+
+    public void loadStateFromFile(File file) {
+        AppState newState = permaStorage.readState(file);
+        this.appState
+                .getWorkspacesProperty()
+                .setValue(newState.getWorkspacesProperty().getValue());
+    }
+
+    public void saveStateToFile(File file) {
+        permaStorage.saveState(appState, file);
     }
 }
