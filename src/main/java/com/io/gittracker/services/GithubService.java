@@ -24,6 +24,10 @@ public class GithubService {
         this.gitHub = github;
     }
 
+    public int get_pr_download_limit() {
+        return appStateService.getAppState().pr_download_limit;
+    }
+
     /**
      *
      * Gets the repository object from 'owner/repo' string that GitHub calls as "repository name".
