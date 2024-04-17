@@ -1,10 +1,10 @@
 package com.io.gittracker.model;
 
-import com.io.gittracker.services.GithubService;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import org.kohsuke.github.GHIssueState;
 
 public class PullRequest implements Serializable {
 
@@ -19,8 +19,7 @@ public class PullRequest implements Serializable {
     private final Date createdAtDate;
     private Date updatedAtDate;
     private String Title;
-
-    private transient GithubService githubService;
+    private GHIssueState state;
 
     public String getTitle() {
         return Title;
@@ -34,7 +33,7 @@ public class PullRequest implements Serializable {
             Date createdAtDate,
             Date updatedAtDate,
             String Title,
-            GithubService githubService) {
+            GHIssueState state) {
         this.id = id;
         this.commentList = commentList;
         this.prStats = prStats;
@@ -42,7 +41,7 @@ public class PullRequest implements Serializable {
         this.createdAtDate = createdAtDate;
         this.updatedAtDate = updatedAtDate;
         this.Title = Title;
-        this.githubService = githubService;
+        this.state = state;
     }
 
     public List<PRComment> listReviewComments() {
@@ -122,11 +121,5 @@ public class PullRequest implements Serializable {
                 + prStats + ", htmlURL="
                 + htmlURL + ", createdAtDate="
                 + createdAtDate + '}';
-    }
-
-    public enum IssueState {
-        OPEN,
-        CLOSED,
-        ALL
     }
 }

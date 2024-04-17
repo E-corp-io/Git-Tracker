@@ -45,7 +45,7 @@ public class GHMapper {
                     pullRequest.getCreatedAt(),
                     pullRequest.getUpdatedAt(),
                     pullRequest.getTitle(),
-                    githubService);
+                    pullRequest.getState());
 
             pr.setCommentList(getComments(pullRequest));
             return pr;
