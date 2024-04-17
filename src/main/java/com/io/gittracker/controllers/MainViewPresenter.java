@@ -261,8 +261,26 @@ public class MainViewPresenter {
     }
 
     @FXML
-    public void goToSettings(MouseEvent _mouseEvent) {
-        this.uiMain.loadSettingsView();
+    public void goToSettings(MouseEvent event) {
+        //        this.uiMain.loadSettingsView();
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        Node node = (Node) event.getSource();
+        Stage thisStage = (Stage) node.getScene().getWindow();
+        popupStage.initOwner(thisStage);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings.fxml"));
+        fxmlLoader.setControllerFactory(uiMain.getApplicationContext()::getBean);
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            System.err.println("Failed to open settings: " + e);
+            return;
+        }
+        Scene popupScene = new Scene(root);
+        popupStage.setScene(popupScene);
+        popupStage.setTitle("Add new repo");
+        popupStage.show();
     }
 
     static class RefreshTask extends Task<Void> {

@@ -16,6 +16,7 @@ public final class AppState implements Serializable {
     public String githubToken = "EMPTY";
 
     private final Date lastUpdate;
+    public int pr_download_limit = 10;
 
     /**
      * creates a default empty appState

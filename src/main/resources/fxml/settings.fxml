@@ -10,12 +10,27 @@
     <top>
         <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
             <HBox>
-                <Label text="Settings"/>
-                <Region HBox.hgrow="ALWAYS" />
-            </HBox>
-            <HBox>
-                <Label styleClass="clickable,important" text="Exit settings" onMouseClicked="#openMainView"/>
+                <Label styleClass="important" text="Settings"/>
             </HBox>
         </VBox>
     </top>
+    <center>
+        <GridPane vgap="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <Label text="PR download limit:" GridPane.rowIndex="1" />
+            <TextField fx:id="downloadLimit" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Button fx:id="exitButton" onMouseClicked="#exitButtonClicked" text="Exit" alignment="BOTTOM_CENTER" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        </GridPane>
+    </center>
 </BorderPane>
