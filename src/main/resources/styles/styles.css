@@ -85,7 +85,7 @@ Button:pressed {
     -fx-background-color: #004080;
 }
 
-.clickable {
+.clickable, .menu-item {
     -fx-underline: true;
     -fx-cursor: hand;
 }
@@ -156,6 +156,14 @@ Button:pressed {
 
 .main-menu-bar {
     -fx-background-color: #1b1d21;
+}
+
+.menu-bar .menu-button:hover, .menu-bar .menu-button:focused, .menu-bar .menu-button:showing, .context-menu {
+    -fx-background-color: #1b1d21;
+}
+
+.menu-item:hover {
+    -fx-background-color: #2a2d33;
 }
 
 .pr-border{
