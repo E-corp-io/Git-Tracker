@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="1500.0" prefWidth="600.0" styleClass="root" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.io.gittracker.controllers.Settings">
+    <top>
+        <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
+            <HBox>
+                <Label text="Settings"/>
+                <Region HBox.hgrow="ALWAYS" />
+            </HBox>
+            <HBox>
+                <Label styleClass="clickable,important" text="Exit settings" onMouseClicked="#openMainView"/>
+            </HBox>
+        </VBox>
+    </top>
+</BorderPane>

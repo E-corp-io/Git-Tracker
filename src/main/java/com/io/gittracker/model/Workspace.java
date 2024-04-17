@@ -13,8 +13,7 @@ import javafx.collections.FXCollections;
 
 public final class Workspace implements Serializable, Refreshable {
     private final String name;
-    private transient ListProperty<Group> groupsProperty =
-            new SimpleListProperty<>(FXCollections.observableArrayList());
+    private ListProperty<Group> groupsProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     public Workspace(String name) {
         this.name = name;

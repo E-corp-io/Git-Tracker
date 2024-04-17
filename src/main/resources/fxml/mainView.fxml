@@ -19,7 +19,7 @@
     <top>
         <VBox styleClass="vbox, margin" BorderPane.alignment="CENTER">
             <HBox>
-                <Label styleClass="clickable,important" text="Settings" />
+                <Label styleClass="clickable,important" text="Settings" onMouseClicked="#goToSettings" />
                 <Region HBox.hgrow="ALWAYS" />
                 <Label fx:id="newRepoLabel" onMouseClicked="#handleAddNewRepoClicked" styleClass="clickable,important" text="Add new repo" />
             </HBox>

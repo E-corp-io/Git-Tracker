@@ -81,9 +81,12 @@ public class MainViewPresenter {
         this.tokenService = tokenService;
         this.uiMain = uiMain;
         this.appStateService = appStateService;
+        System.out.println("Creating new MainViewPresenter");
     }
 
+    @FXML
     public void initialize() {
+        System.out.println("In Main View initialize()");
         if (appStateService.getAppState().getWorkspacesProperty().isEmpty()) {
             createDefaultContent();
         }
@@ -100,6 +103,7 @@ public class MainViewPresenter {
                 }
             }
         });
+        workspaceListView.setCellFactory(workspaceListView.getCellFactory());
 
         // display workspace names in listView
         groupsListView.setCellFactory(param -> new ListCell<>() {
@@ -125,7 +129,7 @@ public class MainViewPresenter {
         workspacesProperty.addListener((observableValue, oldValue, newValue) -> {
             workspaceListView.getItems().setAll(newValue);
         });
-
+        workspacesProperty.unbind();
         workspacesProperty.bind(appStateService.getWorkspacesProperty());
 
         if (!workspacesProperty.isEmpty()) viewWorkspace(workspacesProperty.get(0));
@@ -254,6 +258,11 @@ public class MainViewPresenter {
         Thread th = new Thread(task);
         th.setDaemon(true);
         th.start();
+    }
+
+    @FXML
+    public void goToSettings(MouseEvent _mouseEvent) {
+        this.uiMain.loadSettingsView();
     }
 
     static class RefreshTask extends Task<Void> {

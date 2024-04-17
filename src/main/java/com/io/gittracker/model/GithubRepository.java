@@ -11,6 +11,11 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import org.kohsuke.github.*;
+import org.kohsuke.github.GHDirection;
+import org.kohsuke.github.GHIssueState;
+import org.kohsuke.github.GHPullRequest;
+import org.kohsuke.github.GHPullRequestQueryBuilder;
+import org.kohsuke.github.GHRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +26,9 @@ public class GithubRepository implements Refreshable, Serializable {
     private URL htmlUrl;
     private String name;
     private Map<Long, PullRequest> pullRequestsMap = new HashMap<>();
-    private transient Optional<PullRequest> latestPullRequest = Optional.empty();
+    private Optional<PullRequest> latestPullRequest = Optional.empty();
     private List<String> labels = new ArrayList<>();
-    private transient ListProperty<PullRequest> pullRequestListProperty =
+    private ListProperty<PullRequest> pullRequestListProperty =
             new SimpleListProperty<>(FXCollections.observableArrayList());
     transient Logger logger = LoggerFactory.getLogger(GithubRepository.class);
 

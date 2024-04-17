@@ -12,7 +12,7 @@ import javafx.collections.FXCollections;
 
 public class Group implements Serializable, Refreshable {
     private final String name;
-    private transient ListProperty<GithubRepository> repositories;
+    private ListProperty<GithubRepository> repositories;
 
     private transient Workspace workspace;
 

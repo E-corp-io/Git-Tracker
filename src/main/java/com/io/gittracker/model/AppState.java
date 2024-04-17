@@ -10,7 +10,7 @@ public final class AppState implements Serializable {
     @Serial
     private static final long serialVersionUID = 0L;
 
-    private transient ListProperty<Workspace> workspacesProperty;
+    private ListProperty<Workspace> workspacesProperty;
     private int currentWorkspaceIndex;
     private int currentGroupIndex;
     public String githubToken = "EMPTY";
