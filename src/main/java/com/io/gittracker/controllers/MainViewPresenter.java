@@ -104,9 +104,12 @@ public class MainViewPresenter {
         this.tokenService = tokenService;
         this.uiMain = uiMain;
         this.appStateService = appStateService;
+        System.out.println("Creating new MainViewPresenter");
     }
 
+    @FXML
     public void initialize() {
+        System.out.println("In Main View initialize()");
         if (appStateService.getAppState().getWorkspacesProperty().isEmpty()) {
             createDefaultContent();
         }
@@ -342,6 +345,29 @@ public class MainViewPresenter {
     public void searchByQuery() {
         String query = searchTextField.getText();
         pipeline.setFilteringStrategy(new RepoNameFilteringStrategy(query));
+    }
+
+    @FXML
+    public void goToSettings() {
+        //        this.uiMain.loadSettingsView();
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        //        Node node = (Node) event.getSource();
+        Stage thisStage = (Stage) dateSortButton.getScene().getWindow();
+        popupStage.initOwner(thisStage);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings.fxml"));
+        fxmlLoader.setControllerFactory(uiMain.getApplicationContext()::getBean);
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            System.err.println("Failed to open settings: " + e);
+            return;
+        }
+        Scene popupScene = new Scene(root);
+        popupStage.setScene(popupScene);
+        popupStage.setTitle("Add new repo");
+        popupStage.show();
     }
 
     static class RefreshTask extends Task<Void> {

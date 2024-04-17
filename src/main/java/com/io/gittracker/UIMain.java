@@ -41,6 +41,10 @@ public class UIMain implements ApplicationListener<StageReadyEvent> {
         this.load("/fxml/mainView.fxml");
     }
 
+    public void loadSettingsView() {
+        this.load("/fxml/settings.fxml");
+    }
+
     private void load(String fxml) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxml));
         fxmlLoader.setControllerFactory(applicationContext::getBean);

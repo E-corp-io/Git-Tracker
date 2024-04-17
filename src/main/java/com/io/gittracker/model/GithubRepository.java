@@ -13,6 +13,12 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import org.kohsuke.github.*;
+import org.kohsuke.github.GHDirection;
+import org.kohsuke.github.GHIssueState;
+import org.kohsuke.github.GHPullRequest;
+import org.kohsuke.github.GHPullRequestQueryBuilder;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.PagedIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +30,11 @@ public class GithubRepository implements Refreshable, Serializable {
     private String name;
     private Map<Long, PullRequest> pullRequestsMap = new HashMap<>();
 
-    private transient Optional<PullRequest> latestPullRequest = Optional.empty();
+    private Optional<PullRequest> latestPullRequest = Optional.empty();
     private List<String> labels = new ArrayList<>();
 
     private String groupName = DEFAULT_GROUP;
-    private transient ListProperty<PullRequest> pullRequestListProperty =
+    private ListProperty<PullRequest> pullRequestListProperty =
             new SimpleListProperty<>(FXCollections.observableArrayList());
     transient Logger logger = LoggerFactory.getLogger(GithubRepository.class);
 
@@ -65,24 +71,26 @@ public class GithubRepository implements Refreshable, Serializable {
     }
 
     List<PullRequest> fetchPullRequests(GithubService githubService) {
-        try {
-            List<GHPullRequest> ghPullRequests =
-                    //                    githubService.getRepositoryById(id).getPullRequests(GHIssueState.ALL);
-                    githubService
-                            .getRepositoryById(id)
-                            .queryPullRequests()
-                            .state(GHIssueState.ALL)
-                            .sort(GHPullRequestQueryBuilder.Sort.UPDATED)
-                            .direction(GHDirection.DESC)
-                            .list()
-                            .toList();
-            return ghPullRequests.stream()
-                    .map(pr -> GHMapper.mapToPullRequest(githubService, pr))
-                    .toList();
-        } catch (IOException e) {
-            logger.error("Failed to fetch repository: {}", name, e);
+        int download_limit = githubService.get_pr_download_limit();
+        List<GHPullRequest> ghPullRequests = new ArrayList<>();
+        var ghPullRequests_it = githubService
+                .getRepositoryById(id)
+                .queryPullRequests()
+                .state(GHIssueState.ALL)
+                .sort(GHPullRequestQueryBuilder.Sort.UPDATED)
+                .direction(GHDirection.DESC)
+                .list()
+                .withPageSize(download_limit)
+                .iterator();
+
+        for (PagedIterator<GHPullRequest> it = ghPullRequests_it; it.hasNext(); ) {
+            GHPullRequest item = it.next();
+            ghPullRequests.add(item);
+            if (--download_limit <= 0) break;
         }
-        return Collections.emptyList();
+        return ghPullRequests.stream()
+                .map(pr -> GHMapper.mapToPullRequest(githubService, pr))
+                .toList();
     }
 
     @Override

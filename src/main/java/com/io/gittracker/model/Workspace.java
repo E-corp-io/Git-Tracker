@@ -14,10 +14,9 @@ public final class Workspace implements Serializable, Refreshable {
     private final String name;
 
     public static final String DEFAULT_GROUP = "ALL";
-    private transient ListProperty<String> groupsProperty =
-            new SimpleListProperty<>(FXCollections.observableArrayList());
+    private ListProperty<String> groupsProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
 
-    private transient ListProperty<GithubRepository> repositoriesProperty =
+    private ListProperty<GithubRepository> repositoriesProperty =
             new SimpleListProperty<>(FXCollections.observableArrayList());
 
     public Workspace(String name) {

@@ -14,16 +14,12 @@
                         <items>
                             <MenuItem mnemonicParsing="false" styleClass="main-menu-bar" text="Open Config" />
                             <MenuItem mnemonicParsing="false" styleClass="main-menu-bar" text="Save Config" />
+                            <MenuItem mnemonicParsing="false" styleClass="main-menu-bar" text="Settings" onAction="#goToSettings" />
                             <MenuItem mnemonicParsing="false" styleClass="main-menu-bar" text="Exit" />
                         </items>
                     </Menu>
-                    <Menu mnemonicParsing="false" text="Settings">
-                        <items>
-                            <MenuItem mnemonicParsing="false" styleClass="main-menu-bar" text="Change API Key" />
-                        </items>
-                    </Menu>
                     <!--             <Menu mnemonicParsing="false" onAction="#handleAddNewRepoClicked" text="Add repository">-->
-                    <Menu mnemonicParsing="false" text="About">
+                    <Menu mnemonicParsing="false" disable="true" text="About">
                         <items>
                             <MenuItem mnemonicParsing="false" text="Action 1" />
                         </items>
